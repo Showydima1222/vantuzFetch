@@ -3,7 +3,7 @@ struct CpuFreq {
     let E_CORE_MAX_FREQ: Int
 }
 
-class CpuDatabase {
+final class CpuDatabase: Sendable {
     private let cpuFreq: [String: CpuFreq] = [
         "apple m4": CpuFreq(P_CORE_MAX_FREQ: 4464, E_CORE_MAX_FREQ: 2892),
     ]

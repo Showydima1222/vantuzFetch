@@ -24,6 +24,14 @@ func mainSS() {
         let unifiedMemory = device.isUsingUnifiedMemory ? "[Unified Memory]" : ""
         print("\(label): \(device.name) \(unifiedMemory) \(device.architecture)")
     }
+    
+    let memInfo = Memory()
+    if memInfo.isParsed {
+        let totalGb = Double(memInfo.info!.total).asGB()
+        let usedGb = Double(memInfo.info!.usedMemory).asGB()
+        print("Memory: \(totalGb)GB total, \(usedGb)GB used")
+        
+    }
 }
 
 @main

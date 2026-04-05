@@ -1,6 +1,6 @@
 
 
-class OsCodenames {
+final class OsCodenames: Sendable {
     private let codenames: [Int: String] = [
         26: "Tahoe",
         15: "Sequoia",
