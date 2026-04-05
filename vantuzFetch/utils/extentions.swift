@@ -4,31 +4,28 @@
 //
 //  Created by showydima on 05.04.2026.
 //
+import Foundation
 
-extension UInt64 {
-    func asKB() -> Double {
-        return Double(self) / 1024
-    }
+extension BinaryInteger {
+    func asKiB() -> Double { Double(self) / 1024 }
+    func asKB()  -> Double { Double(self) / 1000 }
 
-    func asMB() -> Double {
-        return Double(self) / 1024 / 1024
-    }
+    func asMiB() -> Double { Double(self) / 1024 / 1024 }
+    func asMB()  -> Double { Double(self) / 1000 / 1000 }
 
-    func asGB() -> Double {
-        return Double(self) / 1024 / 1024 / 1024
-    }
+    func asGiB() -> Double { Double(self) / 1024 / 1024 / 1024 }
+    func asGB()  -> Double { Double(self) / 1000 / 1000 / 1000 }
 }
 
-extension Double {
-    func asKB() -> Double {
-        return Double(self) / 1024
-    }
+extension BinaryFloatingPoint {
+    func asKiB() -> Double { Double(self) / 1024 }
+    func asKB()  -> Double { Double(self) / 1000 }
 
-    func asMB() -> Double {
-        return Double(self) / 1024 / 1024
-    }
+    func asMiB() -> Double { Double(self) / 1024 / 1024 }
+    func asMB()  -> Double { Double(self) / 1000 / 1000 }
 
-    func asGB() -> Double {
-        return Double(self) / 1024 / 1024 / 1024
-    }
+    func asGiB() -> Double { Double(self) / 1024 / 1024 / 1024 }
+    func asGB()  -> Double { Double(self) / 1000 / 1000 / 1000 }
+    
+    func asFormattedString(_ numbersCount: Int = 2) -> String { Double(self).formatted(.number.precision(.fractionLength(0...numbersCount))) }
 }

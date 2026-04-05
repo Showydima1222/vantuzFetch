@@ -27,8 +27,8 @@ func mainSS() {
     
     let memInfo = Memory()
     if memInfo.isParsed {
-        let totalGb = Double(memInfo.info!.total).asGB()
-        let usedGb = Double(memInfo.info!.usedMemory).asGB()
+        let totalGb = Double(memInfo.info!.total).asGiB()
+        let usedGb = Double(memInfo.info!.usedMemory).asGiB().asFormattedString()
         print("Memory: \(totalGb)GB total, \(usedGb)GB used")
         
     }
