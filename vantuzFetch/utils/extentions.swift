@@ -27,5 +27,9 @@ extension BinaryFloatingPoint {
     func asGiB() -> Double { Double(self) / 1024 / 1024 / 1024 }
     func asGB()  -> Double { Double(self) / 1000 / 1000 / 1000 }
     
-    func asFormattedString(_ numbersCount: Int = 2) -> String { Double(self).formatted(.number.precision(.fractionLength(0...numbersCount))) }
+    func asFormattedString(_ numbersCount: Int = 2) -> String { Double(self).formatted(
+        .number.precision(
+            .fractionLength(0...numbersCount))
+            .grouping(.never))
+        .trimmingCharacters(in: .whitespacesAndNewlines) }
 }

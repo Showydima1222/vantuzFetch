@@ -40,6 +40,8 @@ struct MemoryInfo {
     let speculative: UInt64
     let compressed: UInt64
     let external: UInt64
+    let purgable: UInt64
+    let swapped: UInt64
     var usedMemory : UInt64 {
         return total - (external + (free - speculative) )
     }
@@ -55,6 +57,8 @@ struct MemoryInfo {
         self.speculative = calcBytes(pageCount: UInt64(stats.speculative_count))
         self.compressed = calcBytes(pageCount: UInt64(stats.compressor_page_count))
         self.external = calcBytes(pageCount: UInt64(stats.external_page_count))
+        self.purgable = calcBytes(pageCount: UInt64(stats.purgeable_count))
+        self.swapped = calcBytes(pageCount: stats.swapped_count)
     }
 }
 
