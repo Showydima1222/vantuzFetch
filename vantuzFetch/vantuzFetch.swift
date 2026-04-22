@@ -12,7 +12,7 @@ func mainSS() {
     }
     print("macOS version: \(osInfo.fullVersion) \(osInfo.codename)")
     print("Host: \(osInfo.hostName)")
-    print("uptime: \(osInfo.uptimeFormatted)")
+    print("Uptime: \(osInfo.uptimeFormatted)")
     print("Сpu: \(cpuInfo.name) (\(cpuInfo.getStringifiedClusters()))")
     
     
@@ -33,7 +33,7 @@ func mainSS() {
         
     }
     
-    let diskInfo = Disks(fetchPhysicalNames: true)
+    let diskInfo = Disks()
     if diskInfo.isParsed {
         var orderedDisks = diskInfo.info!.sorted {
             (lhs, rhs) -> Bool in
