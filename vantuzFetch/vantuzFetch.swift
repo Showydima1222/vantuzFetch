@@ -1,4 +1,4 @@
-//import ArgumentParser
+import ArgumentParser
 import Foundation
 
 func mainSS() {
@@ -64,18 +64,18 @@ func mainSS() {
     
 }
 
+//@main
+//class Vantuz {
+//    static func main() {
+//        mainSS()
+//    }
+//}
+
 @main
-class Vantuz {
-    static func main() {
+struct VantuzFetch: ParsableCommand {
+    mutating func run() throws {
         mainSS()
     }
 }
 
-//@main
-//struct VantuzFetch: ParsableCommand {
-//    mutating func run() throws {
-//        mainSS()
-//    }
-//}
-//
 

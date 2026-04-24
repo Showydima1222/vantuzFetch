@@ -6,7 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		24270F192F9C0F710052F81B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 24270F182F9C0F710052F81B /* ArgumentParser */; };
+		24270F1B2F9C0F750052F81B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 24270F1A2F9C0F750052F81B /* ArgumentParser */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
+		24270F102F9C0EFA0052F81B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		24E9C4B72F80156200DB25F5 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -19,32 +33,72 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		24270F142F9C0EFA0052F81B /* vantuzFetchArm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vantuzFetchArm; sourceTree = BUILT_PRODUCTS_DIR; };
 		24E9C4B92F80156200DB25F5 /* vantuzFetch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vantuzFetch; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		24270F152F9C0EFA0052F81B /* Exceptions for "vantuzFetch" folder in "vantuzFetchArm" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				fetch/cpu.swift,
+				fetch/disks.swift,
+				fetch/gpu.swift,
+				fetch/memory.swift,
+				fetch/os.swift,
+				fetch/static/cpu_info.swift,
+				fetch/static/os_codenames.swift,
+				utils/extentions.swift,
+				utils/wrappers.swift,
+				vantuzFetch.swift,
+			);
+			target = 24270F0D2F9C0EFA0052F81B /* vantuzFetchArm */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		24E9C4BB2F80156200DB25F5 /* vantuzFetch */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				24270F152F9C0EFA0052F81B /* Exceptions for "vantuzFetch" folder in "vantuzFetchArm" target */,
+			);
 			path = vantuzFetch;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		24270F0F2F9C0EFA0052F81B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24270F1B2F9C0F750052F81B /* ArgumentParser in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24E9C4B62F80156200DB25F5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24270F192F9C0F710052F81B /* ArgumentParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		24270F172F9C0F710052F81B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		24E9C4B02F80156200DB25F5 = {
 			isa = PBXGroup;
 			children = (
 				24E9C4BB2F80156200DB25F5 /* vantuzFetch */,
+				24270F172F9C0F710052F81B /* Frameworks */,
 				24E9C4BA2F80156200DB25F5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				24E9C4B92F80156200DB25F5 /* vantuzFetch */,
+				24270F142F9C0EFA0052F81B /* vantuzFetchArm */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -60,6 +115,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		24270F0D2F9C0EFA0052F81B /* vantuzFetchArm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24270F112F9C0EFA0052F81B /* Build configuration list for PBXNativeTarget "vantuzFetchArm" */;
+			buildPhases = (
+				24270F0E2F9C0EFA0052F81B /* Sources */,
+				24270F0F2F9C0EFA0052F81B /* Frameworks */,
+				24270F102F9C0EFA0052F81B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				24E9C4BB2F80156200DB25F5 /* vantuzFetch */,
+			);
+			name = vantuzFetchArm;
+			packageProductDependencies = (
+				24270F1A2F9C0F750052F81B /* ArgumentParser */,
+			);
+			productName = vantuzFetch;
+			productReference = 24270F142F9C0EFA0052F81B /* vantuzFetchArm */;
+			productType = "com.apple.product-type.tool";
+		};
 		24E9C4B82F80156200DB25F5 /* vantuzFetch */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 24E9C4C02F80156200DB25F5 /* Build configuration list for PBXNativeTarget "vantuzFetch" */;
@@ -77,6 +155,7 @@
 			);
 			name = vantuzFetch;
 			packageProductDependencies = (
+				24270F182F9C0F710052F81B /* ArgumentParser */,
 			);
 			productName = vantuzFetch;
 			productReference = 24E9C4B92F80156200DB25F5 /* vantuzFetch */;
@@ -106,17 +185,28 @@
 			);
 			mainGroup = 24E9C4B02F80156200DB25F5;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				24270F162F9C0F4D0052F81B /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 24E9C4BA2F80156200DB25F5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				24E9C4B82F80156200DB25F5 /* vantuzFetch */,
+				24270F0D2F9C0EFA0052F81B /* vantuzFetchArm */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		24270F0E2F9C0EFA0052F81B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24E9C4B52F80156200DB25F5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -127,6 +217,35 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		24270F122F9C0EFA0052F81B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXCLUDED_ARCHS = "x86-64";
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		24270F132F9C0EFA0052F81B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				EXCLUDED_ARCHS = "x86-64";
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
 		24E9C4BE2F80156200DB25F5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -275,6 +394,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		24270F112F9C0EFA0052F81B /* Build configuration list for PBXNativeTarget "vantuzFetchArm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24270F122F9C0EFA0052F81B /* Debug */,
+				24270F132F9C0EFA0052F81B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		24E9C4B42F80156200DB25F5 /* Build configuration list for PBXProject "vantuzFetch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -294,6 +422,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		24270F162F9C0F4D0052F81B /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		24270F182F9C0F710052F81B /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 24270F162F9C0F4D0052F81B /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+		24270F1A2F9C0F750052F81B /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 24270F162F9C0F4D0052F81B /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 24E9C4B12F80156200DB25F5 /* Project object */;
 }
