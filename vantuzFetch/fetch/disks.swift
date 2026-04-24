@@ -30,7 +30,7 @@ class DisksParser {
         let resourceKeys: [URLResourceKey] = [
             .volumeNameKey,
             .volumeTotalCapacityKey,
-            .volumeAvailableCapacityKey,
+            .volumeAvailableCapacityForImportantUsageKey,
             .volumeIsInternalKey,
             .volumeIsRemovableKey,
             .volumeIsRootFileSystemKey,
@@ -54,7 +54,7 @@ class DisksParser {
                 // fetching volume info
                 guard let name = resource.volumeName,
                       let total = resource.volumeTotalCapacity,
-                      let available = resource.volumeAvailableCapacity,
+                      let available = resource.volumeAvailableCapacityForImportantUsage,
                       let isInternal = resource.volumeIsInternal,
                       let isRemovable = resource.volumeIsRemovable,
                       let isSystemVolume = resource.volumeIsRootFileSystem,

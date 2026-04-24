@@ -72,25 +72,19 @@ struct OsInfo {
     var patchVersion: String  { "\(self.rawOsInfo.patchVersion)" }
     var uptimeFormatted: String {
         let formatter = DateComponentsFormatter()
-            // Добавь .year, .month, .day если аптайм может быть огромным
             formatter.allowedUnits = [.hour, .minute, .second]
             formatter.unitsStyle = .abbreviated
-            formatter.zeroFormattingBehavior = .pad // Оставляем нули, если нужно
+            formatter.zeroFormattingBehavior = .pad
             
         guard let formattedString = formatter.string(from: self.uptime) else { return "0с" }
+        
+        let pattern = "(\\d+)\\s+([\\w]+)"
+        let regex = try? NSRegularExpression(pattern: pattern)
+        let range = NSRange(formattedString.startIndex..., in: formattedString)
             
-            // Регулярка: схлопываем пробел между числом и буквой (2 ч -> 2ч)
-            // Но оставляем пробел между самими блоками (2ч 7мин)
-            let pattern = "(\\d+)\\s+([\\w]+)"
-            let regex = try? NSRegularExpression(pattern: pattern)
-            let range = NSRange(formattedString.startIndex..., in: formattedString)
-            
-            let result = regex?.stringByReplacingMatches(in: formattedString,
-                                                         options: [],
-                                                         range: range,
-                                                         withTemplate: "$1$2") ?? formattedString
-            
-            return result
+        let result = regex?.stringByReplacingMatches(in: formattedString, options: [],
+                                                         range: range, withTemplate: "$1$2") ?? formattedString
+        return result
     }
     var fullVersion: String {
         if self.patchVersion == "0" {
