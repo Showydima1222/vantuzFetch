@@ -1,16 +1,48 @@
 import ArgumentParser
 import Foundation
 
+struct vantuzModules {
+    let allModules: [FetchableModule] = [
+        CpuModule()
+    ]
+    
+    func executeAll(enabledIds: [String]) -> [FetchableModule] {
+        let _all = enabledIds.contains("all")
+        var executed: [FetchableModule] = []
+        
+        for var module in allModules {
+            if enabledIds.contains(module.id) || _all {
+                module.run()
+                executed.append(module)
+            }
+        }
+        
+        return executed
+    }
+}
 
 @main
 struct VantuzFetch: ParsableCommand {
     @Flag(name: [.customLong("show-physical-disk-names")], help: "Shows physical names of disks")
+    
     var CONFIG_showPhysicalDiskNames = false
+
+    
     mutating func run() throws {
+        let modules = vantuzModules()
+            .executeAll(enabledIds: ["all"])
         print("vantuz!")
+        for module in modules {
+            if module.isFetched {
+                for result in module.results {
+                    print("\(result.keyId): \(result.value)")
+                }
+            }
+        }
+        print("old vantuz!")
         
         let osInfo = OsInfo()
-        let cpuInfo = CpuInfo()
+//        let cpuInfo = CpuInfo()
         let model = osInfo.model
         if let model = model {
             print("Machine: \(model)")
@@ -18,7 +50,7 @@ struct VantuzFetch: ParsableCommand {
         print("macOS version: \(osInfo.fullVersion) \(osInfo.codename)")
         print("Host: \(osInfo.hostName)")
         print("Uptime: \(osInfo.uptimeFormatted)")
-        print("Сpu: \(cpuInfo.name) (\(cpuInfo.getStringifiedClusters()))")
+//        print("Сpu: \(cpuInfo.name) (\(cpuInfo.getStringifiedClusters()))")
         
         
         let gpuInfo = GPUInfo()

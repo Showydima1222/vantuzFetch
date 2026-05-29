@@ -49,6 +49,7 @@
 				fetch/static/cpu_info.swift,
 				fetch/static/os_codenames.swift,
 				utils/extentions.swift,
+				utils/protocols.swift,
 				utils/wrappers.swift,
 				vantuzFetch.swift,
 			);

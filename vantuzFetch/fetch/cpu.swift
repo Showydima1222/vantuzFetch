@@ -14,6 +14,22 @@ struct CpuStaticInfo: Codable {
     let EClusterCoreMaxFreq: Int
 }
 
+struct CpuModule: FetchableModule {
+    let id: String = "cpu"
+    var isFetched: Bool = false
+    
+    var results: [FetchResult] = []
+    mutating func run() {
+        let CPU_name = CpuParser.getCpuName()
+        let CPU_clusters = CpuParser.getClusters(CpuName: CPU_name)
+        self.isFetched = !CPU_clusters.isEmpty
+        if self.isFetched {
+            let result: String = "\(CPU_name) (\(CpuParser.getStringifiedClusters(clusters: CPU_clusters)))"
+            self.results = [FetchResult(keyId: self.id, value: result)]
+        }
+    }
+}
+
 
 class CpuParser {
     static func getCpuName() -> String{
@@ -43,6 +59,34 @@ class CpuParser {
         }
         return clusters
     }
+    static func getStringifiedClusters(clusters: [CpuCluster]) -> String {
+        var maxBuffer: [String] = []
+        var throttledBuffer: [String] = []
+        
+        for cluster in clusters {
+            func formatCpuCount(physical: Int, logical: Int) -> String {
+                // if logical > physical; shows logical cores count in brackets
+                return physical == logical ? "\(physical)" : "\(physical) (\(logical))"
+            }
+            let freqString = cluster.coreFreq.map { " @ \($0) MHz" } ?? ""
+            let maxCores = formatCpuCount(physical: cluster.physicalCpuCountMax, logical: cluster.logicalCpuCountMax)
+            maxBuffer.append("\(cluster.coreName): \(maxCores)\(freqString)")
+            
+            let areClustersDisabled = cluster.logicalCpuCount  <  cluster.logicalCpuCountMax
+            || cluster.physicalCpuCount <  cluster.physicalCpuCountMax
+            
+            if areClustersDisabled {
+                let activeCores = formatCpuCount(physical: cluster.physicalCpuCount,
+                                                 logical: cluster.logicalCpuCount)
+                throttledBuffer.append("\(cluster.coreName): \(activeCores)\(freqString)")
+            }
+        }
+        if throttledBuffer.isEmpty {
+                return maxBuffer.joined(separator: ", ")
+            } else {
+                return "Current Cores: \(throttledBuffer.joined(separator: ", ")); Should be in this machine: \(maxBuffer.joined(separator: ", "))"
+            }
+    }
 }
 
 struct CpuInfo {
@@ -54,36 +98,4 @@ struct CpuInfo {
         self.clusters = CpuParser.getClusters(CpuName: self.name)
     }
     
-    func getStringifiedClusters() -> String {
-        var MaxBuffer: [String] = []
-        var ThrottledBuffer: [String] = []
-        for cluster in clusters {
-            let isSystemThrottled = cluster.logicalCpuCount < cluster.logicalCpuCountMax || cluster.physicalCpuCount < cluster.physicalCpuCountMax
-            let isLogicalEqPhysical = cluster.logicalCpuCount == cluster.physicalCpuCount
-            let isLogicalEqPhysicalMax = cluster.logicalCpuCountMax == cluster.physicalCpuCountMax
-            let isCoresDataFetched = cluster.logicalCpuCountMax > 0 && cluster.physicalCpuCountMax > 0
-            
-            // real physically existing cores
-            let cpuCountMax: String = isLogicalEqPhysicalMax
-                ? "\(cluster.physicalCpuCountMax)"
-                : "\(cluster.physicalCpuCountMax) (\(cluster.logicalCpuCountMax))"
-            let freq: String = cluster.coreFreq != nil ? " @ \(cluster.coreFreq!) mHz" : ""
-            MaxBuffer.append("\(cluster.coreName): \(cpuCountMax)\(freq)")
-
-            if isSystemThrottled {
-                // if macOS disabled some cores
-                let cpuCount: String = isLogicalEqPhysical
-                    ? "\(cluster.physicalCpuCount)"
-                    : "\(cluster.physicalCpuCount) (\(cluster.logicalCpuCount))"
-                let freq: String = cluster.coreFreq != nil ? "@ \(cluster.coreFreq!) mHz" : ""
-                ThrottledBuffer.append("\(cluster.coreName): \(cpuCount)\(freq)")
-            }
-            
-        }
-        if ThrottledBuffer.isEmpty {
-            return "\(String(MaxBuffer.joined(separator: ", ")))"
-        } else {
-            return "Currently throttled: \(String(ThrottledBuffer.joined(separator: ", "))); Max: \(String(MaxBuffer.joined(separator: ", ")))"
-        }
-    }
 }
