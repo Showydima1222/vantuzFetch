@@ -3,7 +3,8 @@ import Foundation
 
 struct vantuzModules {
     let allModules: [FetchableModule] = [
-        CpuModule()
+        CpuModule(),
+        OSVersionModule(),
     ]
     
     func executeAll(enabledIds: [String]) -> [FetchableModule] {
@@ -23,15 +24,17 @@ struct vantuzModules {
 
 @main
 struct VantuzFetch: ParsableCommand {
-    @Flag(name: [.customLong("show-physical-disk-names")], help: "Shows physical names of disks")
     
+    @Flag(name: [.customLong("show-physical-disk-names")], help: "Shows physical names of disks")
     var CONFIG_showPhysicalDiskNames = false
 
     
     mutating func run() throws {
         let modules = vantuzModules()
             .executeAll(enabledIds: ["all"])
+        
         print("vantuz!")
+        
         for module in modules {
             if module.isFetched {
                 for result in module.results {
@@ -39,6 +42,9 @@ struct VantuzFetch: ParsableCommand {
                 }
             }
         }
+        
+        
+        
         print("old vantuz!")
         
         let osInfo = OsInfo()
@@ -47,7 +53,7 @@ struct VantuzFetch: ParsableCommand {
         if let model = model {
             print("Machine: \(model)")
         }
-        print("macOS version: \(osInfo.fullVersion) \(osInfo.codename)")
+//        print("macOS version: \(osInfo.fullVersion) \(osInfo.codename)")
         print("Host: \(osInfo.hostName)")
         print("Uptime: \(osInfo.uptimeFormatted)")
 //        print("Сpu: \(cpuInfo.name) (\(cpuInfo.getStringifiedClusters()))")
