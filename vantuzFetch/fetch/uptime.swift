@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct OSUptime: FetchableModule {
+struct OSUptimeModule: FetchableModule {
     let id: String = "uptime"
     var isFetched: Bool = false
     var results: [FetchResult] = []

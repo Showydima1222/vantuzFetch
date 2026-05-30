@@ -15,7 +15,7 @@ class OSHostParser {
 }
 }
 
-struct OSHost: FetchableModule {
+struct OSHostModule: FetchableModule {
     let id: String = "host"
     var isFetched: Bool { get } = false
     var results: [FetchResult] { get } = []
