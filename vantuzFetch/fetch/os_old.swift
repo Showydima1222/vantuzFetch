@@ -13,13 +13,13 @@ class OsParser {
 
 struct OsInfo {
 //    let rawOsInfo: OperatingSystemVersion
-    let hostName: String
+    // let hostName: String
 //    let codename: String
     let model: String?
-    // let uptime: TimeInterval
+    // let uptime: TimeInterval``
     init () {
 //        self.rawOsInfo = ProcessInfo.processInfo.operatingSystemVersion
-        self.hostName = OsParser.parseHostName(rawHostName: ProcessInfo.processInfo.hostName)
+        // self.hostName = OsParser.parseHostName(rawHostName: ProcessInfo.processInfo.hostName)
 //        self.codename = OsParser.getOsCodename(self.rawOsInfo.majorVersion) ?? ""
         self.model = sysctlString("hw.model")
         // self.uptime = ProcessInfo.processInfo.systemUptime

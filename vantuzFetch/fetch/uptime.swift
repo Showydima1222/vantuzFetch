@@ -36,6 +36,6 @@ struct OSUptime: FetchableModule {
                                                 range: range, 
                                                 withTemplate: "$1$2") ?? formattedString
         }
-        self.results = [FetchResult(keyId: "uptime", value: uptimeFormatted)]
+        self.results = [FetchResult(keyId: self.id, value: uptimeFormatted)]
     }
 }
