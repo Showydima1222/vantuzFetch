@@ -1,29 +1,29 @@
-import Foundation
+//import Foundation
+//
+//
+//
+//class OsParser {
+//    static func parseHostName(rawHostName: String) -> String {
+//        // deletes .local from hostName
+//        if rawHostName.lowercased().hasSuffix(".local") { return String(rawHostName.dropLast(".local".count)) }
+//        else { return String(rawHostName.isEmpty ? "localhost" : rawHostName) }
+//    }
+//
+//}
 
-
-
-class OsParser {
-    static func parseHostName(rawHostName: String) -> String {
-        // deletes .local from hostName
-        if rawHostName.lowercased().hasSuffix(".local") { return String(rawHostName.dropLast(".local".count)) }
-        else { return String(rawHostName.isEmpty ? "localhost" : rawHostName) }
-    }
-
-}
-
-struct OsInfo {
+//struct OsInfo {
 //    let rawOsInfo: OperatingSystemVersion
     // let hostName: String
 //    let codename: String
-    let model: String?
+//    let model: String?
     // let uptime: TimeInterval``
-    init () {
+//    init () {
 //        self.rawOsInfo = ProcessInfo.processInfo.operatingSystemVersion
         // self.hostName = OsParser.parseHostName(rawHostName: ProcessInfo.processInfo.hostName)
 //        self.codename = OsParser.getOsCodename(self.rawOsInfo.majorVersion) ?? ""
-        self.model = sysctlString("hw.model")
+//        self.model = sysctlString("hw.model")
         // self.uptime = ProcessInfo.processInfo.systemUptime
-    }
+//    }
     
 
 //     var uptimeFormatted: String {
@@ -51,4 +51,4 @@ struct OsInfo {
 //                                            withTemplate: "$1$2") ?? formattedString
 // }
 
-}
+//}

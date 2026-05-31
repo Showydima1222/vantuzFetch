@@ -50,15 +50,15 @@ struct VantuzFetch: ParsableCommand {
         
         print("old vantuz!")
         
-        let osInfo = OsInfo()
+//        let osInfo = OsInfo()
 //        let cpuInfo = CpuInfo()
-        let model = osInfo.model
-        if let model = model {
-            print("Machine: \(model)")
-        }
+//        let model = osInfo.model
+//        if let model = model {
+//            print("Machine: \(model)")
+//        }
 //        print("macOS version: \(osInfo.fullVersion) \(osInfo.codename)")
-        print("Host: \(osInfo.hostName)")
-        print("Uptime: \(osInfo.uptimeFormatted)")
+//        print("Host: \(osInfo.hostName)")
+//        print("Uptime: \(osInfo.uptimeFormatted)")
 //        print("Сpu: \(cpuInfo.name) (\(cpuInfo.getStringifiedClusters()))")
         
         
