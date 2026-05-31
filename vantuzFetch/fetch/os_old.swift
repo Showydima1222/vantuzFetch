@@ -13,34 +13,42 @@ class OsParser {
 
 struct OsInfo {
 //    let rawOsInfo: OperatingSystemVersion
-    let hostName: String
+    // let hostName: String
 //    let codename: String
     let model: String?
-    let uptime: TimeInterval
+    // let uptime: TimeInterval``
     init () {
 //        self.rawOsInfo = ProcessInfo.processInfo.operatingSystemVersion
-        self.hostName = OsParser.parseHostName(rawHostName: ProcessInfo.processInfo.hostName)
+        // self.hostName = OsParser.parseHostName(rawHostName: ProcessInfo.processInfo.hostName)
 //        self.codename = OsParser.getOsCodename(self.rawOsInfo.majorVersion) ?? ""
         self.model = sysctlString("hw.model")
-        self.uptime = ProcessInfo.processInfo.systemUptime
+        // self.uptime = ProcessInfo.processInfo.systemUptime
     }
     
 
-    var uptimeFormatted: String {
-        let formatter = DateComponentsFormatter()
-            formatter.allowedUnits = [.hour, .minute, .second]
-            formatter.unitsStyle = .abbreviated
-            formatter.zeroFormattingBehavior = .pad
-            
-        guard let formattedString = formatter.string(from: self.uptime) else { return "0с" }
+//     var uptimeFormatted: String {
+//     let formatter = DateComponentsFormatter()
+//     formatter.unitsStyle = .abbreviated
+//     formatter.zeroFormattingBehavior = .pad
+    
+//     let oneDay: TimeInterval = 60 * 60 * 24
+//     let oneMonth: TimeInterval = 60 * 60 * 24 * 30
+    
+//     if self.uptime >= oneMonth { formatter.allowedUnits = [.month, .day, .hour]
+//     } else 
+//     if self.uptime >= oneDay { formatter.allowedUnits = [.day, .hour, .minute]
+//     } else { formatter.allowedUnits = [.hour, .minute, .second]
+//     }
         
-        let pattern = "(\\d+)\\s+([\\w]+)"
-        let regex = try? NSRegularExpression(pattern: pattern)
-        let range = NSRange(formattedString.startIndex..., in: formattedString)
-            
-        let result = regex?.stringByReplacingMatches(in: formattedString, options: [],
-                                                         range: range, withTemplate: "$1$2") ?? formattedString
-        return result
-    }
+//     guard let formattedString = formatter.string(from: self.uptime) else { return "error while formating" }
+    
+//     let regex = try? NSRegularExpression(pattern: "(\\d+)\\s+(\\w+)")
+//     let range = NSRange(formattedString.startIndex..., in: formattedString)
+        
+//     return regex?.stringByReplacingMatches(in: formattedString, 
+//                                            options: [], 
+//                                            range: range, 
+//                                            withTemplate: "$1$2") ?? formattedString
+// }
 
 }

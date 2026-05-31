@@ -5,6 +5,9 @@ struct vantuzModules {
     let allModules: [FetchableModule] = [
         CpuModule(),
         OSVersionModule(),
+        MachineModule(),
+        OSUptimeModule(),
+        OSHostModule()
     ]
     
     func executeAll(enabledIds: [String]) -> [FetchableModule] {
