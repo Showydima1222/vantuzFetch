@@ -7,15 +7,6 @@ class GPUParser {
     }
 }
 
-//struct GPUDevice {
-//    let name: String
-//    let coresAmount: Int
-//    let isUsingUnifiedMemory: Bool
-//    let isIgpu: Bool
-//    let architecture: String
-//}
-
-
 struct GPUModule: FetchableModule {
     let id: String = "gpu"
     var isFetched: Bool = false
@@ -24,7 +15,7 @@ struct GPUModule: FetchableModule {
     mutating func run() {
         var i: Int = 0
         for device in GPUParser.getDeivces() {
-            let isIgpu = device.isLowPower && !device.isRemovable
+//            let isIgpu = device.isLowPower && !device.isRemovable
             var deviceArchitecture: String = ""
             if #available(macOS 14.0, *) {
                 deviceArchitecture = device.architecture.name
@@ -35,25 +26,4 @@ struct GPUModule: FetchableModule {
         }
         self.isFetched = !self.results.isEmpty
     }
-    
 }
-//
-//class GPUInfo {
-////    let deivces: [GPUDevice]
-//    init() {
-//        var buffer: [GPUDevice] = []
-//        for device in GPUParser.getDeivces() {
-//            let isIgpu = device.isLowPower && !device.isRemovable
-//            var deviceArchitecture: String = ""
-//            if #available(macOS 14.0, *) {
-//                deviceArchitecture = device.architecture.name
-//            }
-//            buffer.append(GPUDevice(
-//                name: device.name, coresAmount: 0, isUsingUnifiedMemory: device.hasUnifiedMemory, isIgpu: isIgpu,
-//                architecture: deviceArchitecture
-//            ))
-//            
-//        }
-//        self.deivces = buffer
-//    }
-//}

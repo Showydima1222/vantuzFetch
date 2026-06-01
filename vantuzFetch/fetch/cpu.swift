@@ -88,14 +88,3 @@ class CpuParser {
             }
     }
 }
-
-//struct CpuInfo {
-//    let name: String
-//    let clusters: [CpuCluster]
-//    
-//    init() {
-//        self.name = CpuParser.getCpuName()
-//        self.clusters = CpuParser.getClusters(CpuName: self.name)
-//    }
-//    
-//}

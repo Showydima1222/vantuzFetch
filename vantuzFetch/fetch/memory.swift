@@ -62,14 +62,6 @@ struct MemoryInfo {
     }
 }
 
-//class Memory {
-//    let info: MemoryInfo?
-//    let isParsed: Bool
-//    
-//    init() {
-//        
-//            }
-//}
 
 struct MemoryModule: FetchableModule {
     let id: String = "mem"
@@ -89,9 +81,5 @@ struct MemoryModule: FetchableModule {
 
             self.results = [FetchResult(keyId: self.id, value: "\(totalGb)GB total, \(usedGb)GB used")]
         }
-
-
     }
-    
-    
 }
