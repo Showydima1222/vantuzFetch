@@ -111,15 +111,15 @@ struct DisksModule: FetchableModule {
     var isFetched: Bool = false
     var results: [FetchResult] = []
     
-//    mutating func run(fetchPhysicalNames: Bool = false) {
+    var showPhysicalDiskNames: Bool
+    
     mutating func run() {
-        let fetchPhysicalNames = true
-        let parser = DisksParser(fetchPhysicalNames: fetchPhysicalNames)
+        let parser = DisksParser(fetchPhysicalNames: self.showPhysicalDiskNames)
         var i = 0
         self.isFetched = parser.isParsed
         
         if self.isFetched {
-            var orderedDisks = parser.parsedDisks.sorted {
+            let orderedDisks = parser.parsedDisks.sorted {
                 (lhs, rhs) -> Bool in
                 func priority (for disk: DiskInfo) -> Int {
                     if disk.isSystemVolume { return 0 }
@@ -134,7 +134,7 @@ struct DisksModule: FetchableModule {
             }
 
             for disk in orderedDisks {
-                let physicalName = disk.physicalName != nil ? ", \(disk.physicalName!)" : ""
+                let physicalName: String = disk.physicalName != nil ? ", \(disk.physicalName!)" : ""
                 let totalGb = Double(disk.total).asGB().asFormattedString()
                 let userGb = Double(disk.usedSpace).asGB().asFormattedString()
                 let isSystemDisk = disk.isSystemVolume ? " (System)" : ""

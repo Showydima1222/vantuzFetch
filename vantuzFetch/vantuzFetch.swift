@@ -2,23 +2,31 @@ import ArgumentParser
 import Foundation
 
 struct vantuzModules {
-    let allModules: [FetchableModule] = [
-        CpuModule(),
-        OSVersionModule(),
-        MachineModule(),
-        OSUptimeModule(),
-        OSHostModule(),
-        GPUModule(),
-        DisksModule(),
-        CpuModule(),
-        
-    ]
     
+    let config: vantuzConfig
+    let allModules: [FetchableModule]
+    
+    init (config: vantuzConfig) {
+        self.config = config
+        self.allModules = [
+            CpuModule(),
+            OSVersionModule(),
+            MachineModule(),
+            OSUptimeModule(),
+            OSHostModule(),
+            GPUModule(),
+            DisksModule(showPhysicalDiskNames: self.config.showPhysicalDiskNames),
+            CpuModule(),
+            
+        ]
+
+    }
+        
     func executeAll(enabledIds: [String]) -> [FetchableModule] {
         let _all = enabledIds.contains("all")
         var executed: [FetchableModule] = []
         
-        for var module in allModules {
+        for var module in self.allModules {
             if enabledIds.contains(module.id) || _all {
                 module.run()
                 executed.append(module)
@@ -34,10 +42,11 @@ struct VantuzFetch: ParsableCommand {
     
     @Flag(name: [.customLong("show-physical-disk-names")], help: "Shows physical names of disks")
     var CONFIG_showPhysicalDiskNames = false
-
+    
     
     mutating func run() throws {
-        let modules = vantuzModules()
+        let config = vantuzConfig(showPhysicalDiskNames: CONFIG_showPhysicalDiskNames)
+        let modules = vantuzModules(config: config)
             .executeAll(enabledIds: ["all"])
         
         print("vantuz!")
