@@ -46,7 +46,6 @@
 				fetch/gpu.swift,
 				fetch/host.swift,
 				fetch/memory.swift,
-				fetch/os_old.swift,
 				fetch/os.swift,
 				fetch/static/cpu_info.swift,
 				fetch/static/os_codenames.swift,

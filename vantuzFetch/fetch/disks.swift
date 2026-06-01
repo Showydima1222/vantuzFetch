@@ -105,3 +105,46 @@ class Disks {
         }
     }
 }
+
+struct DisksModule: FetchableModule {
+    let id: String = "disks"
+    var isFetched: Bool = false
+    var results: [FetchResult] = []
+    
+//    mutating func run(fetchPhysicalNames: Bool = false) {
+    mutating func run() {
+        let fetchPhysicalNames = true
+        let parser = DisksParser(fetchPhysicalNames: fetchPhysicalNames)
+        var i = 0
+        self.isFetched = parser.isParsed
+        
+        if self.isFetched {
+            var orderedDisks = parser.parsedDisks.sorted {
+                (lhs, rhs) -> Bool in
+                func priority (for disk: DiskInfo) -> Int {
+                    if disk.isSystemVolume { return 0 }
+                    if disk.isInternal { return 1 }
+                    return 2
+                }
+                let p1 = priority(for: lhs)
+                let p2 = priority(for: rhs)
+                if p1 != p2 { return p1 < p2 }
+                
+                return lhs.volumeName.localizedCompare(rhs.volumeName) == .orderedAscending
+            }
+
+            for disk in orderedDisks {
+                let physicalName = disk.physicalName != nil ? ", \(disk.physicalName!)" : ""
+                let totalGb = Double(disk.total).asGB().asFormattedString()
+                let userGb = Double(disk.usedSpace).asGB().asFormattedString()
+                let isSystemDisk = disk.isSystemVolume ? " (System)" : ""
+                let isInternal = disk.isInternal ? " (Internal)" : " (External)"
+                let isReadOnly = disk.isReadOnly ? " (ReadOnly)" : ""
+                let usedPercent = Int(round(disk.usedSpace.asGB() / disk.total.asGB() * 100))
+                self.results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName)", value: "\(userGb)GB / \(totalGb)GB (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)"))
+                i += 1
+            }
+        }
+    }
+
+}
