@@ -62,20 +62,36 @@ struct MemoryInfo {
     }
 }
 
-class Memory {
-    let info: MemoryInfo?
-    let isParsed: Bool
+//class Memory {
+//    let info: MemoryInfo?
+//    let isParsed: Bool
+//    
+//    init() {
+//        
+//            }
+//}
+
+struct MemoryModule: FetchableModule {
+    let id: String = "mem"
+    var isFetched: Bool = false
+    var results: [FetchResult] = []
     
-    init() {
+    mutating func run() {
         let parser = MemoryParser()
-        var pageSize: vm_size_t = 0
-        host_page_size(mach_host_self(), &pageSize)
-        self.isParsed = parser.isParsed
-        if isParsed {
-            self.info = MemoryInfo(
-                stats: parser.stats!, pageSize: UInt64(pageSize)
-            )
-        } else { self.info = nil }
+        self.isFetched = parser.isParsed
+        
+        if self.isFetched {
+            var pageSize: vm_size_t = 0
+            host_page_size(mach_host_self(), &pageSize)
+            let info = MemoryInfo(stats: parser.stats!, pageSize: UInt64(pageSize))
+            let totalGb = Double(info.total).asGiB().asFormattedString()
+            let usedGb = Double(info.usedMemory).asGiB().asFormattedString()
+
+            self.results = [FetchResult(keyId: self.id, value: "\(totalGb)GB total, \(usedGb)GB used")]
+        }
+
 
     }
+    
+    
 }

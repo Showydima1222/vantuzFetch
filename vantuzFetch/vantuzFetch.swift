@@ -17,6 +17,7 @@ struct vantuzModules {
             GPUModule(),
             DisksModule(showPhysicalDiskNames: self.config.showPhysicalDiskNames),
             CpuModule(),
+            MemoryModule()
             
         ]
 
@@ -61,7 +62,7 @@ struct VantuzFetch: ParsableCommand {
         
         
         
-        print("old vantuz!")
+//        print("old vantuz!")
         
 //        let osInfo = OsInfo()
 //        let cpuInfo = CpuInfo()
@@ -84,13 +85,13 @@ struct VantuzFetch: ParsableCommand {
 //            print("\(label): \(device.name) \(unifiedMemory) \(device.architecture)")
 //        }
         
-        let memInfo = Memory()
-        if memInfo.isParsed {
-            let totalGb = Double(memInfo.info!.total).asGiB().asFormattedString()
-            let usedGb = Double(memInfo.info!.usedMemory).asGiB().asFormattedString()
-            print("Memory: \(totalGb)GB total, \(usedGb)GB used")
-            
-        }
+//        let memInfo = Memory()
+//        if memInfo.isParsed {
+//            let totalGb = Double(memInfo.info!.total).asGiB().asFormattedString()
+//            let usedGb = Double(memInfo.info!.usedMemory).asGiB().asFormattedString()
+//            print("Memory: \(totalGb)GB total, \(usedGb)GB used")
+//            
+//        }
 //        
 //        let diskInfo = Disks(fetchPhysicalNames: self.CONFIG_showPhysicalDiskNames)
 //        if diskInfo.isParsed {
