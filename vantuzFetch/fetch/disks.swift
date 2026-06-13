@@ -108,17 +108,15 @@ class Disks {
 
 struct DisksModule: FetchableModule {
     let id: String = "disks"
-    var isFetched: Bool = false
-    var results: [FetchResult] = []
-    
+
     var showPhysicalDiskNames: Bool
     
-    mutating func run() {
+    func run() -> [FetchResult] {
+        var results: [FetchResult] = []
         let parser = DisksParser(fetchPhysicalNames: self.showPhysicalDiskNames)
         var i = 0
-        self.isFetched = parser.isParsed
         
-        if self.isFetched {
+        if parser.isParsed {
             let orderedDisks = parser.parsedDisks.sorted {
                 (lhs, rhs) -> Bool in
                 func priority (for disk: DiskInfo) -> Int {
@@ -141,10 +139,11 @@ struct DisksModule: FetchableModule {
                 let isInternal = disk.isInternal ? " (Internal)" : " (External)"
                 let isReadOnly = disk.isReadOnly ? " (ReadOnly)" : ""
                 let usedPercent = Int(round(disk.usedSpace.asGB() / disk.total.asGB() * 100))
-                self.results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName)", value: "\(userGb)GB / \(totalGb)GB (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)"))
+                results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName)", value: "\(userGb)GB / \(totalGb)GB (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)"))
                 i += 1
             }
         }
+        return results
     }
 
 }

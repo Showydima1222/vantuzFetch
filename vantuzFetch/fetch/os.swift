@@ -38,10 +38,9 @@ class OSCodenameParser {
 
 struct OSVersionModule: FetchableModule {
     let id: String = "os"
-    var isFetched: Bool = false
-    var results: [FetchResult] = []
     
-    mutating func run() {
+    func run() -> [FetchResult] {
+        var results: [FetchResult] = []
         let rawOsInfo = ProcessInfo.processInfo.operatingSystemVersion
         
         let major = rawOsInfo.majorVersion
@@ -51,7 +50,7 @@ struct OSVersionModule: FetchableModule {
         
         let codename = OSCodenameParser.getOsCodename(major)
         let codenameSuffix = codename.map { " \($0)" } ?? ""
-        self.results = [FetchResult(keyId: "os", value: "macOS \(fullVersion)\(codenameSuffix)")]
-        self.isFetched = true
+        results = [FetchResult(keyId: "os", value: "macOS \(fullVersion)\(codenameSuffix)")]
+        return results
     }
 }

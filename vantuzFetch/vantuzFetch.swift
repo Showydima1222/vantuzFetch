@@ -9,7 +9,6 @@ struct vantuzModules {
     init (config: vantuzConfig) {
         self.config = config
         self.allModules = [
-            CpuModule(),
             OSVersionModule(),
             MachineModule(),
             OSUptimeModule(),
@@ -22,17 +21,18 @@ struct vantuzModules {
 
     }
         
-    func executeAll(enabledIds: [String]) -> [FetchableModule] {
+    func executeAll(enabledIds: [String]) -> [[FetchResult]] {
         let _all = enabledIds.contains("all")
-        var executed: [FetchableModule] = []
+        var executed: [[FetchResult]] = []
         
-        for var module in self.allModules {
+        for module in self.allModules {
             if enabledIds.contains(module.id) || _all {
-                module.run()
-                executed.append(module)
+                let executedModule = module.run()
+                if !executedModule.isEmpty {
+                    executed.append(executedModule)
+                }
             }
         }
-        
         return executed
     }
 }
@@ -61,11 +61,9 @@ struct VantuzFetch: ParsableCommand {
         
         print("vantuz!")
         
-        for module in modules {
-            if module.isFetched {
-                for result in module.results {
-                    print("\(result.keyId): \(result.value)")
-                }
+        for executed in modules {
+            for result in executed {
+                print("\(result.keyId): \(result.value)")
             }
         }
     }

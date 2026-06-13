@@ -16,17 +16,16 @@ struct CpuStaticInfo: Codable {
 
 struct CpuModule: FetchableModule {
     let id: String = "cpu"
-    var isFetched: Bool = false
     
-    var results: [FetchResult] = []
-    mutating func run() {
+    func run() -> [FetchResult] {
+        var results: [FetchResult] = []
         let CPU_name = CpuParser.getCpuName()
         let CPU_clusters = CpuParser.getClusters(CpuName: CPU_name)
-        self.isFetched = !CPU_clusters.isEmpty
-        if self.isFetched {
+        if !CPU_clusters.isEmpty {
             let result: String = "\(CPU_name) (\(CpuParser.getStringifiedClusters(clusters: CPU_clusters)))"
-            self.results = [FetchResult(keyId: self.id, value: result)]
+            results = [FetchResult(keyId: self.id, value: result)]
         }
+        return results
     }
 }
 

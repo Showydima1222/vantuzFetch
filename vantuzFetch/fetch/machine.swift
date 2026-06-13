@@ -7,10 +7,8 @@
 
 struct MachineModule: FetchableModule {
     let id: String = "machine"
-    var isFetched: Bool = false
-    var results: [FetchResult] = []
-    mutating func run() {
-        self.results = [FetchResult(keyId: self.id, value: sysctlString("hw.model") ?? "unknown")]
-        self.isFetched = true
+    
+    func run() -> [FetchResult] {
+        return [FetchResult(keyId: self.id, value: sysctlString("hw.model") ?? "unknown")]
     }
 }

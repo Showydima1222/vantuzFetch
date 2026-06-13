@@ -8,9 +8,9 @@ import Foundation
 
 struct OSUptimeModule: FetchableModule {
     let id: String = "uptime"
-    var isFetched: Bool = false
-    var results: [FetchResult] = []
-    mutating func run() {
+    
+    func run() -> [FetchResult] {
+        var results: [FetchResult] = []
         let uptime: TimeInterval = ProcessInfo.processInfo.systemUptime
         var uptimeFormatted: String {
             let formatter = DateComponentsFormatter()
@@ -36,6 +36,7 @@ struct OSUptimeModule: FetchableModule {
                                                 range: range, 
                                                 withTemplate: "$1$2") ?? formattedString
         }
-        self.results = [FetchResult(keyId: self.id, value: uptimeFormatted)]
+        results = [FetchResult(keyId: self.id, value: uptimeFormatted)]
+        return results
     }
 }

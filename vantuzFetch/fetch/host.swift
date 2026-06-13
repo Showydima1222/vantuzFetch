@@ -18,10 +18,8 @@ class OSHostParser {
 
 struct OSHostModule: FetchableModule {
     let id: String = "host"
-    var isFetched: Bool = false
-    var results: [FetchResult] = []
-    mutating func run() {
-        self.results = [FetchResult(keyId: self.id, value: "\(OSHostParser.parseHostName(ProcessInfo.processInfo.hostName))")]
-        self.isFetched = true
+    
+    func run() -> [FetchResult] {
+        return [FetchResult(keyId: self.id, value: "\(OSHostParser.parseHostName(ProcessInfo.processInfo.hostName))")]
     }
 }

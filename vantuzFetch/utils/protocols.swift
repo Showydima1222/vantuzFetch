@@ -12,8 +12,6 @@ struct FetchResult {
 
 protocol FetchableModule {
     var id: String { get }
-    var isFetched: Bool { get }
-    var results: [FetchResult] { get }
-    mutating func run() 
+    func run() -> [FetchResult]
 }
 
