@@ -5,28 +5,39 @@ struct vantuzModules {
     
     let config: vantuzConfig
     let allModules: [FetchableModule]
+    let modulesOrdered: [String: FetchableModule]
     
     init (config: vantuzConfig) {
         self.config = config
         self.allModules = [
             OSVersionModule(),
+            KernelModule(),
             MachineModule(),
             OSUptimeModule(),
             OSHostModule(),
             GPUModule(),
-            DisksModule(showPhysicalDiskNames: self.config.showPhysicalDiskNames),
+            DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames),
             CpuModule(),
             MemoryModule()
         ]
-
+        self.modulesOrdered = Dictionary(uniqueKeysWithValues: allModules.map { ($0.id, $0) })
     }
         
-    func executeAll(enabledIds: [String]) -> [[FetchResult]] {
+    func executeModules(enabledIds: [String]) -> [[FetchResult]] {
         let _all = enabledIds.contains("all")
         var executed: [[FetchResult]] = []
         
-        for module in self.allModules {
-            if enabledIds.contains(module.id) || _all {
+        if _all {
+            for module in self.allModules {
+                let executedModule = module.run()
+                if !executedModule.isEmpty {
+                    executed.append(executedModule)
+                }
+            }
+            return executed
+        }
+        for id in enabledIds {
+            if let module = self.modulesOrdered[id] {
                 let executedModule = module.run()
                 if !executedModule.isEmpty {
                     executed.append(executedModule)
@@ -34,6 +45,7 @@ struct vantuzModules {
             }
         }
         return executed
+        
     }
 }
 
@@ -45,19 +57,27 @@ struct VantuzFetch: ParsableCommand {
     @Flag(name: [.customLong("hide-physical-disk-names")], help: "Hides physical names of disks")
     var hidePhysicalDiskNames = false
     
+    @Flag(name: [.customLong("all")], help: "Show all modules")
+    var showyAllModules = false
+    
     
     mutating func run() throws {
         let configInitializer = VantuzConfigInitializer()
         let activePaths = configInitializer.loadActivePaths()
         let configFile: vantuzConfig = configInitializer.loadConfig(from: activePaths.configURL)
         
-        var finalShowPhysicalDiskNames = configFile.showPhysicalDiskNames
+        var finalShowPhysicalDiskNames = configFile.diskConfig.showPhysicalDiskNames
         if showPhysicalDiskNames { finalShowPhysicalDiskNames = true }
         else if hidePhysicalDiskNames { finalShowPhysicalDiskNames = false }
         
-        let config = vantuzConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames)
+        var enabledIds: [String] = configFile.modules.modules
+        if showyAllModules { enabledIds.append("all") }
+        
+        let config = vantuzConfig(
+            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames)
+        )
         let modules = vantuzModules(config: config)
-            .executeAll(enabledIds: ["all"])
+            .executeModules(enabledIds: enabledIds)
         
         print("vantuz!")
         

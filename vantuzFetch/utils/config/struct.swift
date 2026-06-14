@@ -11,8 +11,17 @@ struct vantuzConfigLocation: Codable {
     let theme: String
 }
 
+struct Modules: Codable {
+    var modules: [String] = []
+}
+
 struct vantuzConfig: Codable {
-    let showPhysicalDiskNames: Bool
+    var modules: Modules = Modules()
+    var diskConfig: DiskConfig = DiskConfig()
+}
+
+struct DiskConfig: Codable {
+    var showPhysicalDiskNames: Bool = false
 }
 
 struct vantuzTheme: Codable {

@@ -17,16 +17,22 @@ enum DefaultTemplates {
     
     static let configToml = """
     title = "vantuz!"
-    showPhysicalDiskNames = false
     [modules]
-    os = true
-    cpu = true
-    memory = true
-    disks = true
-    uptime = true
+    # order matters 
+    modules = ["os", "kernel", "machine", "host", "uptime", "cpu", "gpu", "mem", "disks"]
+    # avaible modules:
+    # os — macOS version
+    # kernel – kernel version
+    # machine — your machine model
+    # uptime — uptime of system
+    # host — host
+    # gpu — list of all gpus (if there is egpu)
+    # disks — list of all disks
+    # cpu — information about cpu
+    # mem — info about ram
     
 
-    [disks_settings]
+    [diskConfig]
     showPhysicalDiskNames = false
     """
     
