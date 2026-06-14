@@ -21,6 +21,8 @@ enum DefaultTemplates {
     # order matters 
     modules = ["os", "kernel", "machine", "host", "uptime", "cpu", "gpu", "mem", "disks"]
     # avaible modules:
+    # all — not a module but if "all" in this list, fetch will be forced to show all modules.
+    #
     # os — macOS version
     # kernel – kernel version
     # machine — your machine model
@@ -34,6 +36,8 @@ enum DefaultTemplates {
 
     [diskConfig]
     showPhysicalDiskNames = false
+    # Fast will show real physically used space. Disabling fast will dont calculate space that macOS caching in this disk (real avaible space)
+    fastVolumeSizeCalculation = false
     """
     
     static let themeToml = """

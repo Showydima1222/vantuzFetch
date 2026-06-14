@@ -26,11 +26,11 @@ class DisksParser {
     var parsedDisks: [DiskInfo] = []
     let isParsed: Bool
     
-    init (fetchPhysicalNames: Bool) {
+    init (fetchPhysicalNames: Bool, fastVolumeSizeCalculation: Bool) {
         let resourceKeys: [URLResourceKey] = [
             .volumeNameKey,
             .volumeTotalCapacityKey,
-            .volumeAvailableCapacityForImportantUsageKey,
+            !fastVolumeSizeCalculation ? .volumeAvailableCapacityForImportantUsageKey : .volumeAvailableCapacityKey,
             .volumeIsInternalKey,
             .volumeIsRemovableKey,
             .volumeIsRootFileSystemKey,
@@ -42,10 +42,8 @@ class DisksParser {
             return
         }
         
-        var daSession: DASession? = nil
-        if (fetchPhysicalNames) {
-            daSession = DASessionCreate(kCFAllocatorDefault)
-        }
+        
+        let daSession: DASession? = DASessionCreate(kCFAllocatorDefault)
         
         for url in volumesUrls {
             do {
@@ -54,7 +52,7 @@ class DisksParser {
                 // fetching volume info
                 guard let name = resource.volumeName,
                       let total = resource.volumeTotalCapacity,
-                      let available = resource.volumeAvailableCapacityForImportantUsage,
+                      let available = !fastVolumeSizeCalculation ? resource.volumeAvailableCapacityForImportantUsage : resource.volumeAvailableCapacity.map(Int64.init),
                       let isInternal = resource.volumeIsInternal,
                       let isRemovable = resource.volumeIsRemovable,
                       let isSystemVolume = resource.volumeIsRootFileSystem,
@@ -62,6 +60,7 @@ class DisksParser {
                 else {
                     continue
                 }
+
                 
                 // fetch physical disk
                 var physicalName: String? = nil
@@ -80,23 +79,20 @@ class DisksParser {
                                                isReadOnly: isReadOnly, physicalName: physicalName)
                 
                 self.parsedDisks.append(currentDiskInfo)
-                
             } catch {
                 continue
             }
-
         }
         self.isParsed = !self.parsedDisks.isEmpty
     }
-    // init ends
 }
 
 class Disks {
     let info: [DiskInfo]?
     let isParsed: Bool
     
-    init(fetchPhysicalNames: Bool = false) {
-        let parser = DisksParser(fetchPhysicalNames: fetchPhysicalNames)
+    init(fetchPhysicalNames: Bool = false, fastVolumeSizeCalculation: Bool = false) {
+        let parser = DisksParser(fetchPhysicalNames: fetchPhysicalNames, fastVolumeSizeCalculation: fastVolumeSizeCalculation)
         self.isParsed = parser.isParsed
         if self.isParsed {
             self.info = parser.parsedDisks
@@ -110,10 +106,11 @@ struct DisksModule: FetchableModule {
     let id: String = "disks"
 
     var showPhysicalDiskNames: Bool
+    var fastVolumeSizeCalculation: Bool
     
     func run() -> [FetchResult] {
         var results: [FetchResult] = []
-        let parser = DisksParser(fetchPhysicalNames: self.showPhysicalDiskNames)
+        let parser = DisksParser(fetchPhysicalNames: self.showPhysicalDiskNames, fastVolumeSizeCalculation: self.fastVolumeSizeCalculation)
         var i = 0
         
         if parser.isParsed {

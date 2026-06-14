@@ -16,7 +16,7 @@ struct vantuzModules {
             OSUptimeModule(),
             OSHostModule(),
             GPUModule(),
-            DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames),
+            DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames, fastVolumeSizeCalculation: config.diskConfig.fastVolumeSizeCalculation),
             CpuModule(),
             MemoryModule()
         ]
@@ -57,6 +57,11 @@ struct VantuzFetch: ParsableCommand {
     @Flag(name: [.customLong("hide-physical-disk-names")], help: "Hides physical names of disks")
     var hidePhysicalDiskNames = false
     
+    @Flag(name: [.customLong("fast-disk-size-calc")], help: "Using fast calculation of disk size without calculating deletable cache")
+    var fastDiskSizeCacl = false
+    @Flag(name: [.customLong("slow-disk-size-calc")], help: "Using slower calculation of disk size with calculating deletable cache")
+    var slowDiskSizeCacl = false
+    
     @Flag(name: [.customLong("all")], help: "Show all modules")
     var showyAllModules = false
     
@@ -70,11 +75,15 @@ struct VantuzFetch: ParsableCommand {
         if showPhysicalDiskNames { finalShowPhysicalDiskNames = true }
         else if hidePhysicalDiskNames { finalShowPhysicalDiskNames = false }
         
+        var finalfastDiskSizeCacl = configFile.diskConfig.fastVolumeSizeCalculation
+        if fastDiskSizeCacl { finalfastDiskSizeCacl = true }
+        else if slowDiskSizeCacl { finalfastDiskSizeCacl = false }
+        
         var enabledIds: [String] = configFile.modules.modules
         if showyAllModules { enabledIds.append("all") }
         
         let config = vantuzConfig(
-            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames)
+            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames, fastVolumeSizeCalculation: finalfastDiskSizeCacl)
         )
         let modules = vantuzModules(config: config)
             .executeModules(enabledIds: enabledIds)

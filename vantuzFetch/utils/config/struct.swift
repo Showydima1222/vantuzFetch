@@ -22,6 +22,7 @@ struct vantuzConfig: Codable {
 
 struct DiskConfig: Codable {
     var showPhysicalDiskNames: Bool = false
+    var fastVolumeSizeCalculation: Bool = false
 }
 
 struct vantuzTheme: Codable {
