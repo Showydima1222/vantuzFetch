@@ -15,6 +15,8 @@ struct vantuzModules {
             MachineModule(),
             OSUptimeModule(),
             OSHostModule(),
+            ShellModule(),
+            TerminalModule(),
             GPUModule(),
             DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames, fastVolumeSizeCalculation: config.diskConfig.fastVolumeSizeCalculation),
             CpuModule(),
@@ -64,6 +66,7 @@ struct VantuzFetch: ParsableCommand {
     
     @Flag(name: [.customLong("all")], help: "Show all modules")
     var showyAllModules = false
+    
     
     
     mutating func run() throws {
