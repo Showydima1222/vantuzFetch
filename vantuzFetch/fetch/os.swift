@@ -42,6 +42,7 @@ struct OSVersionModule: FetchableModule {
     func run() -> [FetchResult] {
         var results: [FetchResult] = []
         let rawOsInfo = ProcessInfo.processInfo.operatingSystemVersion
+        let versionRaw = sysctlString("kern.osversion") ?? "unknown?"
         
         let major = rawOsInfo.majorVersion
         let minor = rawOsInfo.minorVersion
@@ -50,7 +51,7 @@ struct OSVersionModule: FetchableModule {
         
         let codename = OSCodenameParser.getOsCodename(major)
         let codenameSuffix = codename.map { " \($0)" } ?? ""
-        results = [FetchResult(keyId: "os", value: "macOS \(fullVersion)\(codenameSuffix)")]
+        results = [FetchResult(keyId: "os", value: "macOS \(fullVersion) (\(versionRaw))\(codenameSuffix)")]
         return results
     }
 }
