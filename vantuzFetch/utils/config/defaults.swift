@@ -19,19 +19,26 @@ enum DefaultTemplates {
     title = "vantuz!"
     [modules]
     # order matters 
-    modules = ["os", "kernel", "machine", "host", "uptime", "cpu", "gpu", "mem", "disks"]
+    modules = ["os", "kernel", "machine", "host", "uptime", "cpu", "gpu", "mem", "swap","disks"]
     # avaible modules:
     # all — not a module but if "all" in this list, fetch will be forced to show all modules.
     #
     # os — macOS version
     # kernel – kernel version
+    # shell — shell
+    # terminal — terminal
     # machine — your machine model
-    # uptime — uptime of system
     # host — host
+    # uptime — uptime of system (time from last boot)
+    # waketime — waketime (time from last sleep)
     # gpu — list of all gpus (if there is egpu)
-    # disks — list of all disks
     # cpu — information about cpu
     # mem — info about ram
+    # swap - info about swap
+    # disks — list of all disks
+    
+    # Shows time of fetching for every module
+    showTimePerformance = false
     
 
     [diskConfig]

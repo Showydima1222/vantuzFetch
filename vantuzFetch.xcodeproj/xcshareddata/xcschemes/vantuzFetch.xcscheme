@@ -57,6 +57,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "--time"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "--show-physical-disk-names"
             isEnabled = "NO">
          </CommandLineArgument>

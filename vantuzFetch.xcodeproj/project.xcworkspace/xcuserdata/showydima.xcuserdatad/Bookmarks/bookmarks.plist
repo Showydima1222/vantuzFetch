@@ -3,51 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>top-level-items</key>
-	<array>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>34</string>
-					<key>EndingLineNumber</key>
-					<string>10</string>
-					<key>StartingColumnNumber</key>
-					<string>34</string>
-					<key>StartingLineNumber</key>
-					<string>10</string>
-					<key>Timestamp</key>
-					<string>803442910.046599</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>vantuzFetch/utils/wrappers.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string></string>
-				<key>leading</key>
-				<string>    guard sysctlbyname(key, &amp;buffer, &amp;size, nil, 0) == 0 else { return nil }
-
-    return String(cString: buffer)</string>
-				<key>trailing</key>
-				<string>
-}
-
-</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-	</array>
+	<array/>
 </dict>
 </plist>

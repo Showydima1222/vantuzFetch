@@ -13,6 +13,7 @@ struct vantuzConfigLocation: Codable {
 
 struct Modules: Codable {
     var modules: [String] = []
+    var showTimePerformance: Bool = false
 }
 
 struct vantuzConfig: Codable {
