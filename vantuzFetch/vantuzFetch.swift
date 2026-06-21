@@ -71,52 +71,27 @@ struct vantuzModules {
 @main
 struct VantuzFetch: ParsableCommand {
     
-    @Flag(name: [.customLong("show-physical-disk-names")], help: "Shows physical names of disks")
-    var showPhysicalDiskNames = false
-    @Flag(name: [.customLong("hide-physical-disk-names")], help: "Hides physical names of disks")
-    var hidePhysicalDiskNames = false
-    
-    @Flag(name: [.customLong("fast-disk-size-calc")], help: "Using fast calculation of disk size without calculating deletable cache")
-    var fastDiskSizeCacl = false
-    @Flag(name: [.customLong("slow-disk-size-calc")], help: "Using slower calculation of disk size with calculating deletable cache")
-    var slowDiskSizeCacl = false
-    
-    @Flag(name: [.customLong("all")], help: "Show all modules")
-    var showyAllModules = false
-    
-    @Flag(name: [.customLong("time")], help: "Meansures time of fetching")
-    var meansureTime = false
-    
-    @Flag(name: [.customLong("hide-time")], help: "Hides meansure of time")
-    var HidemeansureTime = false
-    
-//    @Flag(name: [.customLong("show-cpu-cores-nubmer")])
+    @OptionGroup var flags: FlagOptions
     
     mutating func run() throws {
         let configInitializer = VantuzConfigInitializer()
         let activePaths = configInitializer.loadActivePaths()
         let configFile: vantuzConfig = configInitializer.loadConfig(from: activePaths.configURL)
         
-        var finalShowPhysicalDiskNames = configFile.diskConfig.showPhysicalDiskNames
-        if showPhysicalDiskNames { finalShowPhysicalDiskNames = true }
-        else if hidePhysicalDiskNames { finalShowPhysicalDiskNames = false }
-        
-        var finalfastDiskSizeCacl = configFile.diskConfig.fastVolumeSizeCalculation
-        if fastDiskSizeCacl { finalfastDiskSizeCacl = true }
-        else if slowDiskSizeCacl { finalfastDiskSizeCacl = false }
-        
-        var finalMeansureTime = configFile.modules.showTimePerformance
-        if meansureTime { finalMeansureTime = true }
-        else if HidemeansureTime { finalMeansureTime = false }
+        let finalShowPhysicalDiskNames = flags.showPhysicalDiskNames ?? configFile.diskConfig.showPhysicalDiskNames
+        let finalFastDiskSizeCalc = flags.fastDiskSizeCalc ?? configFile.diskConfig.fastVolumeSizeCalculation
+        let finalMeasureTime = flags.measureTime ?? configFile.modules.showTimePerformance
         
         var enabledIds: [String] = configFile.modules.modules
-        if showyAllModules { enabledIds.append("all") }
+        if flags.showAllModules {
+            enabledIds.append("all")
+        }
         
         let cpuConfig = configFile.cpuConfig
         
         let config = vantuzConfig(
-            modules: Modules(modules: enabledIds, showTimePerformance: finalMeansureTime),
-            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames, fastVolumeSizeCalculation: finalfastDiskSizeCacl),
+            modules: Modules(modules: enabledIds, showTimePerformance: finalMeasureTime),
+            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames, fastVolumeSizeCalculation: finalFastDiskSizeCalc),
             cpuConfig: cpuConfig
         )
         let modules = vantuzModules(config: config)
