@@ -130,13 +130,13 @@ struct DisksModule: FetchableModule {
 
             for disk in orderedDisks {
                 let physicalName: String = disk.physicalName != nil ? ", \(disk.physicalName!)" : ""
-                let totalGb = Double(disk.total).asGB().asFormattedString()
-                let userGb = Double(disk.usedSpace).asGB().asFormattedString()
+                let totalGb: String  = disk.total.autoSI()
+                let userGb:  String  = disk.usedSpace.autoSI()
                 let isSystemDisk = disk.isSystemVolume ? " (System)" : ""
                 let isInternal = disk.isInternal ? " (Internal)" : " (External)"
                 let isReadOnly = disk.isReadOnly ? " (ReadOnly)" : ""
                 let usedPercent = Int(round(disk.usedSpace.asGB() / disk.total.asGB() * 100))
-                results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName)", value: "\(userGb)GB / \(totalGb)GB (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)"))
+                results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName)", value: "\(userGb) / \(totalGb) (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)"))
                 i += 1
             }
         }

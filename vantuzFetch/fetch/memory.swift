@@ -73,9 +73,9 @@ struct MemoryModule: FetchableModule {
             var pageSize: vm_size_t = 0
             host_page_size(mach_host_self(), &pageSize)
             let info = MemoryInfo(stats: parser.stats!, pageSize: UInt64(pageSize))
-            let totalGb = Double(info.total).asGiB().asFormattedString()
-            let usedGb = Double(info.usedMemory).asGiB().asFormattedString()
-            results = [FetchResult(keyId: self.id, value: "\(totalGb)GB total, \(usedGb)GB used")]
+            let totalGb: String = info.total.autoCS()
+            let usedGb = info.usedMemory.autoCS()
+            results = [FetchResult(keyId: self.id, value: "\(totalGb) total, \(usedGb) used")]
         }
         return results
     }
