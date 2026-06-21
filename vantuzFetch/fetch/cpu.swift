@@ -1,145 +1,111 @@
 import Foundation
 
 struct CpuCluster {
-    let logicalCpuCount: Int
-    let logicalCpuCountMax: Int
-    let physicalCpuCount: Int
-    let physicalCpuCountMax: Int
+    let coreCount: Int
     let coreFreq: Int?
     let coreName: String?
-    let firstLevelCache: Int
-    let secondLevelCache: Int
+    let l1Cache: Int
+    let l2Cache: Int
 }
 
 struct CpuStaticInfo: Codable {
-    let PClusterCoreMaxFreq: Int
-    let EClusterCoreMaxFreq: Int
+    let pClusterCoreMaxFreq: Int
+    let eClusterCoreMaxFreq: Int
 }
 
 struct CpuModule: FetchableModule {
     let id: String = "cpu"
-    
-    var CpuConfig: CPUConfig
+    var cpuConfig: CPUConfig
     
     func run() -> [FetchResult] {
-        var results: [FetchResult] = []
-        let CPU_name = CpuParser.getCpuName()
+        let cpuName = CpuParser.getCpuName()
+        
+        guard cpuConfig.showCoresCount else {
+            return [FetchResult(keyId: self.id, value: cpuName)]
+        }
         
         let result: String
-        if CpuConfig.showCoresCount {
-            if CpuConfig.showClusters {
-                let CPU_clusters = CpuParser.getClusters(cpuName: CPU_name, config: CpuConfig)
-                if !CPU_clusters.isEmpty {
-                    result = "\(CPU_name) (\(CpuParser.getStringifiedClusters(clusters: CPU_clusters)))"
-                } else { result = "\(CPU_name) No clusters recognized"}
-            } else { var coresCount: String = CpuParser.getCoresCount(); coresCount = coresCount != "" ? " (\(coresCount))" : ""; result = "\(CPU_name)\(coresCount)" }
-        } else { result = CPU_name }
+        if cpuConfig.showClusters {
+            let cpuClusters = CpuParser.getClusters(cpuName: cpuName, config: cpuConfig)
+            result = cpuClusters.isEmpty
+                ? "\(cpuName) No clusters recognized"
+                : "\(cpuName) (\(CpuParser.getStringifiedClusters(clusters: cpuClusters)))"
+        } else {
+            let coresCount = CpuParser.getCoresCount()
+            result = coresCount.isEmpty ? cpuName : "\(cpuName) (\(coresCount))"
+        }
         
-        results = [FetchResult(keyId: self.id, value: result)]
-        return results
+        return [FetchResult(keyId: self.id, value: result)]
     }
 }
 
-
 class CpuParser {
-    static func getCpuName() -> String{
+    static func getCpuName() -> String {
         return sysctlString("machdep.cpu.brand_string") ?? "Unknown"
     }
     
     static func getCoresCount() -> String {
-        let physicalCores    = sysctlInt("hw.physicalcpu") ?? 0
-        let logicalCores     = sysctlInt("hw.logicalcpu") ?? 0
-        if physicalCores == logicalCores { return "\(physicalCores)" }
-        return "\(physicalCores) (\(logicalCores))"
+        guard let cores = sysctlInt("hw.physicalcpu") else { return "" }
+        return "\(cores)"
     }
     
-    static func formatCpuCount(physical: Int, logical: Int) -> String {
-        // if logical > physical; shows logical cores count in brackets
-        return physical == logical ? "\(physical)" : "\(physical) (\(logical))"
-    }
-    
-    static func getCluster(_ clusterNumber: Int, cpu_name: String, config: CPUConfig) -> CpuCluster {
-        let _prefix = "hw.perflevel\(String(clusterNumber))"
-        var name: String? = nil
-        if config.showClusterNames {
-            name = sysctlString("\(_prefix).name") ?? "unknown"
-        }
-        var physicalCoresMax = 0
-        var physicalCores = 0
-        var logicalCoresMax = 0
-        var logicalCores = 0
+    static func getCluster(_ clusterNumber: Int, cpuName: String, config: CPUConfig) -> CpuCluster {
+        let prefix = "hw.perflevel\(clusterNumber)"
         
-        var firstLevelCache = 0
-        var secondLevelCache = 0
+        let name = config.showClusterNames ? sysctlString("\(prefix).name") : nil
         
+        var coreCount = 0
         if config.showCoresCount {
-            physicalCoresMax = sysctlInt("\(_prefix).physicalcpu_max") ?? 0
-            physicalCores    = sysctlInt("\(_prefix).physicalcpu") ?? 0
-            logicalCoresMax  = sysctlInt("\(_prefix).logicalcpu_max") ?? 0
-            logicalCores     = sysctlInt("\(_prefix).logicalcpu") ?? 0
+            coreCount = sysctlInt("\(prefix).physicalcpu") ?? 0
         }
         
+        var l1Cache = 0
+        var l2Cache = 0
         if config.showClusterCache && config.showClusters {
-            let l1i = sysctlInt("\(_prefix).l1icachesize") ?? 0
-            let l1d = sysctlInt("\(_prefix).l1dcachesize") ?? 0
-            firstLevelCache = l1i + l1d
-            
-            secondLevelCache = sysctlInt("\(_prefix).l2cachesize") ?? 0
+            let l1i = sysctlInt("\(prefix).l1icachesize") ?? 0
+            let l1d = sysctlInt("\(prefix).l1dcachesize") ?? 0
+            l1Cache = l1i + l1d
+            l2Cache = sysctlInt("\(prefix).l2cachesize") ?? 0
         }
         
         var coreFreq: Int? = nil
-        var currentCpuInfo:CpuFreq?  = nil
-        if (config.showClusters && config.showCoresCount) {
-            currentCpuInfo = CpuDatabase.shared.getCpuFreq(cpu_name)
+        if config.showClusters && config.showCoresCount {
+            let currentCpuInfo = CpuDatabase.shared.getCpuFreq(cpuName)
+            // cluster 0 = Performance cores, cluster 1 = Efficiency cores
+            coreFreq = (clusterNumber == 0) ? currentCpuInfo?.P_CORE_MAX_FREQ : currentCpuInfo?.E_CORE_MAX_FREQ
         }
         
-        // cluster 0 = P, cluster 1 = E on Apple Silicon
-        coreFreq = clusterNumber == 0 ? currentCpuInfo?.P_CORE_MAX_FREQ : currentCpuInfo?.E_CORE_MAX_FREQ
-        
-        return CpuCluster(logicalCpuCount: logicalCores, logicalCpuCountMax: logicalCoresMax, physicalCpuCount: physicalCores, physicalCpuCountMax: physicalCoresMax, coreFreq: coreFreq, coreName: name, firstLevelCache: firstLevelCache, secondLevelCache: secondLevelCache)
+        return CpuCluster(
+            coreCount: coreCount,
+            coreFreq: coreFreq,
+            coreName: name,
+            l1Cache: l1Cache,
+            l2Cache: l2Cache
+        )
     }
-    static func getClusters(cpuName: String, config:CPUConfig) -> [CpuCluster] {
-        let clustersLimit = 10 // limit to avoid infinity loop if sysctl gives wrong information
+    
+    static func getClusters(cpuName: String, config: CPUConfig) -> [CpuCluster] {
+        let clustersLimit = 4 // На текущих чипах Apple более 2-4 перф-уровней не существует
         var clusters: [CpuCluster] = []
+        
         for i in 0..<clustersLimit {
-            guard let _ = sysctlInt("hw.perflevel\(String(i)).logicalcpu") else {
-                break
-            }
-            clusters.append(getCluster(i, cpu_name: cpuName, config: config))
+            guard sysctlInt("hw.perflevel\(i).physicalcpu") != nil else { break }
+            clusters.append(getCluster(i, cpuName: cpuName, config: config))
         }
         return clusters
     }
     
     static func getStringifiedClusters(clusters: [CpuCluster]) -> String {
-        var maxBuffer: [String] = []
-        var throttledBuffer: [String] = []
-        
-        for cluster in clusters {
-
-            let freqString = cluster.coreFreq.map { " @ \($0)MHz" } ?? ""
+        return clusters.map { cluster in
+            let nameStr = cluster.coreName.map { " \($0)" } ?? ""
+            let freqStr = cluster.coreFreq.map { " @ \($0)MHz" } ?? ""
             
-            let secondCacheLevelString: String = cluster.secondLevelCache != 0 ?
-            "L2: \(cluster.secondLevelCache.autoCS())" : ""
-            let firstCacheLevelString: String = cluster.firstLevelCache != 0 ?
-            " L1: \(cluster.firstLevelCache.autoCS())\(cluster.secondLevelCache != 0 ? ", " : "")" : ""
-            let cacheString = "\(firstCacheLevelString)\(secondCacheLevelString)"
-            let maxCores = formatCpuCount(physical: cluster.physicalCpuCountMax, logical: cluster.logicalCpuCountMax)
-            var name = cluster.coreName == nil ? "" : " \(cluster.coreName!)"
-            maxBuffer.append("\(maxCores)\(name)\(freqString)\(cacheString)")
+            var cacheParts: [String] = []
+            if cluster.l1Cache > 0 { cacheParts.append("L1: \(cluster.l1Cache.autoCS())") }
+            if cluster.l2Cache > 0 { cacheParts.append("L2: \(cluster.l2Cache.autoCS())") }
+            let cacheStr = cacheParts.isEmpty ? "" : " " + cacheParts.joined(separator: ", ")
             
-            let areClustersDisabled = cluster.logicalCpuCount  <  cluster.logicalCpuCountMax
-            || cluster.physicalCpuCount <  cluster.physicalCpuCountMax
-            
-            if areClustersDisabled {
-                let activeCores = formatCpuCount(physical: cluster.physicalCpuCount,
-                                                 logical: cluster.logicalCpuCount)
-                name = "\(name): "
-                throttledBuffer.append("\(name)\(activeCores)\(freqString)")
-            }
-        }
-        if throttledBuffer.isEmpty {
-                return maxBuffer.joined(separator: " || ")
-        }
-        return "Current Cores: \(throttledBuffer.joined(separator: ", ")); Should be in this machine: \(maxBuffer.joined(separator: ", "))"
+            return "\(cluster.coreCount)\(nameStr)\(freqStr)\(cacheStr)"
+        }.joined(separator: " || ")
     }
 }
