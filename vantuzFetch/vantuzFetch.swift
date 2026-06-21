@@ -34,7 +34,7 @@ struct vantuzModules {
             TerminalModule(),
             GPUModule(),
             DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames, fastVolumeSizeCalculation: config.diskConfig.fastVolumeSizeCalculation),
-            CpuModule(),
+            CpuModule(CpuConfig: config.cpuConfig),
             MemoryModule(),
             SwapModule(),
         ]
@@ -90,6 +90,7 @@ struct VantuzFetch: ParsableCommand {
     @Flag(name: [.customLong("hide-time")], help: "Hides meansure of time")
     var HidemeansureTime = false
     
+//    @Flag(name: [.customLong("show-cpu-cores-nubmer")])
     
     mutating func run() throws {
         let configInitializer = VantuzConfigInitializer()
@@ -111,9 +112,12 @@ struct VantuzFetch: ParsableCommand {
         var enabledIds: [String] = configFile.modules.modules
         if showyAllModules { enabledIds.append("all") }
         
+        let cpuConfig = configFile.cpuConfig
+        
         let config = vantuzConfig(
             modules: Modules(modules: enabledIds, showTimePerformance: finalMeansureTime),
-            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames, fastVolumeSizeCalculation: finalfastDiskSizeCacl)
+            diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames, fastVolumeSizeCalculation: finalfastDiskSizeCacl),
+            cpuConfig: cpuConfig
         )
         let modules = vantuzModules(config: config)
             .executeModules(enabledIds: enabledIds)

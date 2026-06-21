@@ -19,11 +19,19 @@ struct Modules: Codable {
 struct vantuzConfig: Codable {
     var modules: Modules = Modules()
     var diskConfig: DiskConfig = DiskConfig()
+    var cpuConfig: CPUConfig = CPUConfig()
 }
 
 struct DiskConfig: Codable {
     var showPhysicalDiskNames: Bool = false
     var fastVolumeSizeCalculation: Bool = false
+}
+
+struct CPUConfig: Codable {
+    var showCoresCount: Bool = true
+    var showClusters: Bool = true
+    var showClusterNames: Bool = true
+    var showClusterCache: Bool = true
 }
 
 struct vantuzTheme: Codable {

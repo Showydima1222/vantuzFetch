@@ -17,9 +17,12 @@ enum DefaultTemplates {
     
     static let configToml = """
     title = "vantuz!"
+    
     [modules]
+    
     # order matters 
     modules = ["os", "kernel", "machine", "host", "uptime", "cpu", "gpu", "mem", "swap","disks"]
+    
     # avaible modules:
     # all — not a module but if "all" in this list, fetch will be forced to show all modules.
     #
@@ -42,9 +45,26 @@ enum DefaultTemplates {
     
 
     [diskConfig]
+    # config for disks module
     showPhysicalDiskNames = false
+    
     # Fast will show real physically used space. Disabling fast will dont calculate space that macOS caching in this disk (real avaible space)
     fastVolumeSizeCalculation = false
+    
+    [cpuConfig]
+    # Config for cpu module
+    
+    showCoresCount = true
+    
+    # if enabled showCoresCount 
+    showClusters = true
+    
+    #if enabled showClusters
+    showClusterNames = true
+    
+    # if enabled ShowClusters
+    showClusterCache = true
+
     """
     
     static let themeToml = """
