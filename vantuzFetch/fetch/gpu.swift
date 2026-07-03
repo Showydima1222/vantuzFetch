@@ -9,6 +9,7 @@ class GPUParser {
 
 struct GPUModule: FetchableModule {
     let id: String = "gpu"
+    let isHeavy: Bool = true
     
     func run() -> [FetchResult] {
         var results: [FetchResult] = []
@@ -19,8 +20,8 @@ struct GPUModule: FetchableModule {
             if #available(macOS 14.0, *) {
                 deviceArchitecture = device.architecture.name
             }
-            let unifiedMemory: String = device.hasUnifiedMemory ? "[Unified Memory]" : ""
-            results.append(FetchResult(keyId: "\(self.id)_\(i)", value: "\(device.name)\(unifiedMemory) (\(deviceArchitecture)"))
+            let unifiedMemory: String = device.hasUnifiedMemory ? " [Unified Memory]" : ""
+            results.append(FetchResult(keyId: "\(self.id)_\(i)", value: "\(device.name)\(unifiedMemory) \(deviceArchitecture)"))
             i = i + 1
         }
         return results
