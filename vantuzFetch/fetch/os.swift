@@ -8,9 +8,10 @@ import Foundation
 
 class OSCodenameParser {
     private static let licenseRegex: NSRegularExpression? = {
-            let pattern = #"macOS\s+(\w+)"#
-            return try? NSRegularExpression(pattern: pattern)
-        }()
+        let pattern = #"macOS\s+(.+?)(?=\s+(?:software|license|agreement|pre-release|seed))"#
+        return try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
+    }()
+    
     static let paths = [
         "/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf"
     ]
@@ -27,15 +28,17 @@ class OSCodenameParser {
                 let range = NSRange(content.startIndex..., in: content)
                 guard let match = regex.firstMatch(in: content, range: range),
                       let versionRange = Range(match.range(at: 1), in: content) else { return nil }
-                return String(content[versionRange])
+                
+                let codename = content[versionRange].trimmingCharacters(in: .whitespacesAndNewlines)
+                return codename.isEmpty ? nil : String(codename)
             }
             .first
     }
+    
     static func getOsCodename(_ version: Int) -> String? {
         OsCodenames.shared.getCodeName(version) ?? parseLicense()
     }
 }
-
 struct OSVersionModule: FetchableModule {
     let id: String = "os"
     
