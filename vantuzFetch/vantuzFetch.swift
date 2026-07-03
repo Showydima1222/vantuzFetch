@@ -33,6 +33,7 @@ struct vantuzModules {
             ShellModule(),
             TerminalModule(),
             GPUModule(),
+            DisplayModule(),
             DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames, fastVolumeSizeCalculation: config.diskConfig.fastVolumeSizeCalculation),
             CpuModule(cpuConfig: config.cpuConfig),
             MemoryModule(),
