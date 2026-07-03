@@ -7,8 +7,11 @@
 
 struct MachineModule: FetchableModule {
     let id: String = "machine"
+    let isHeavy: Bool = false
     
     func run() -> [FetchResult] {
-        return [FetchResult(keyId: self.id, value: sysctlString("hw.model") ?? "unknown")]
+        let model = sysctlString("hw.model") ?? "unknown"
+        let modeltype = sysctlString("hw.targettype").map { " (\($0))" } ?? ""
+        return [FetchResult(keyId: self.id, value: "\(model)\(modeltype)")]
     }
 }
