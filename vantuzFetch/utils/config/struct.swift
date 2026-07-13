@@ -35,5 +35,27 @@ struct CPUConfig: Codable {
 }
 
 struct vantuzTheme: Codable {
-    
+    let colors: vantuzColors
+    let strings: vantuzStrings
+}
+
+struct vantuzColors: Codable {
+    let title: String
+    let accent: String
+    let text: String
+}
+
+struct vantuzStrings: Codable {
+    let osTitle: String
+    let kernelTitle: String
+    let machineTitle: String
+    let uptimeTitle: String
+    let waketimeTitle: String
+    let hostTitle: String
+    let gpuTitle: String
+    let displayTitle: String
+    let disksTitle: String
+    let cpuTitle: String
+    let memTitle: String
+    let swapTitle: String
 }

@@ -69,12 +69,22 @@ enum DefaultTemplates {
     
     static let themeToml = """
     [colors]
-    title = "magenta"
-    accent = "cyan"
+    title = "yellow"
+    accent = "bright_yellow"
     text = "white"
 
-    [layout]
-    padding_left = 2
-    separator = " -> "
+    [strings]
+    osTitle = "OS"
+    kernelTitle = "Kernel"
+    machineTitle = "Machine"
+    uptimeTitle = "Uptime"
+    waketimeTitle = "Waketime"
+    hostTitle = "Host"
+    gpuTitle = "GPU ({num})"
+    displayTitle = "Display ({num})"
+    disksTitle = "Disk ({num}, {name})"
+    cpuTitle = "CPU"
+    memTitle = "RAM"
+    swapTitle = "SWAP" 
     """
 }
