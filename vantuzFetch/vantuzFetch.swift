@@ -105,6 +105,8 @@ struct vantuzRender {
         case "kernel": return self.theme.strings.kernelTitle
         case "machine": return self.theme.strings.machineTitle
         case "uptime": return self.theme.strings.uptimeTitle
+        case "terminal": return self.theme.strings.terminalTitle
+        case "shell": return self.theme.strings.shellTitle
         case "waketime": return self.theme.strings.waketimeTitle
         case "host": return self.theme.strings.hostTitle
         case "gpu": return self.theme.strings.gpuTitle

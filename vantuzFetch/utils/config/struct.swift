@@ -51,6 +51,8 @@ struct vantuzStrings: Codable {
     let machineTitle: String
     let uptimeTitle: String
     let waketimeTitle: String
+    let terminalTitle: String
+    let shellTitle: String
     let hostTitle: String
     let gpuTitle: String
     let displayTitle: String
