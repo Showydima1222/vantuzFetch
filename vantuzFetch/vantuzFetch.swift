@@ -87,8 +87,8 @@ struct vantuzRender {
         }
         
         return rawTitle
-            .replacing("num", with: number)
-            .replacing("name", with: name)
+            .replacing("{num}", with: number)
+            .replacing("{name}", with: name)
     }
     
     static func _getTerminalSize() -> (rows: UInt16, cols: UInt16) {
@@ -123,9 +123,12 @@ struct vantuzRender {
         let colorfulOutput = value
             .replacing("{{ ACCENT_COLOR }}", with: self.validColors.accent)
             .replacing("{{ TEXT }}", with: self.validColors.text)
-        print(
-            "\(self.validColors.title)\(title): \(self.validColors.text)\(colorfulOutput)\(vantuzRender.reset)"
-        )
+        
+        if self.isColorSupported {
+            print("\(self.validColors.title)\(title): \(self.validColors.text)\(colorfulOutput)\(vantuzRender.reset)")
+        } else {
+            print("\(title): \(value)")
+        }
     }
 
 }
