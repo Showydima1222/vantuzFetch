@@ -70,7 +70,7 @@ struct vantuzRender {
         validColors = vantuzColors(
             title: vantuzRender._parseHex(theme.colors.title, fallbackColor: "yellow"),
             accent: vantuzRender._parseHex(theme.colors.accent, fallbackColor: "bright_yellow"),
-            text: vantuzRender._parseHex(theme.colors.text, fallbackColor: "white")
+            text: vantuzRender._parseHex(theme.colors.text, fallbackColor: "bright_white")
         )
         
     }
@@ -147,7 +147,7 @@ struct vantuzModules {
         self.showTime = config.modules.showTimePerformance
         self.allModules = [
             OSVersionModule(),
-            KernelModule(),
+            KernelModule(showBuildDate: config.kernelConfig.showBuildDate),
             MachineModule(),
             OSUptimeModule(),
             WakeTimeModule(),
@@ -205,6 +205,7 @@ struct VantuzFetch: ParsableCommand {
         let finalShowPhysicalDiskNames = flags.showPhysicalDiskNames ?? configFile.diskConfig.showPhysicalDiskNames
         let finalFastDiskSizeCalc = flags.fastDiskSizeCalc ?? configFile.diskConfig.fastVolumeSizeCalculation
         let finalMeasureTime = flags.measureTime ?? configFile.modules.showTimePerformance
+        let finalShowKernelBuildDate = flags.showKernelBuildDate ?? configFile.kernelConfig.showBuildDate
         
         var enabledIds: [String] = configFile.modules.modules
         if flags.showAllModules {
@@ -216,7 +217,8 @@ struct VantuzFetch: ParsableCommand {
         let config = vantuzConfig(
             modules: Modules(modules: enabledIds, showTimePerformance: finalMeasureTime),
             diskConfig: DiskConfig(showPhysicalDiskNames: finalShowPhysicalDiskNames, fastVolumeSizeCalculation: finalFastDiskSizeCalc),
-            cpuConfig: cpuConfig
+            cpuConfig: cpuConfig,
+            kernelConfig: KernelConfig(showBuildDate: finalShowKernelBuildDate)
         )
         let modules = vantuzModules(config: config)
             .executeModules(enabledIds: enabledIds)
@@ -227,7 +229,6 @@ struct VantuzFetch: ParsableCommand {
         for executed in modules {
             for result in executed {
                 vantuzRender.renderLine(index: 0, key_title: result.keyId, value: result.value)
-//                print("\(result.keyId): \(result.value)")
             }
         }
     }

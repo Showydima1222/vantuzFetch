@@ -42,7 +42,10 @@ enum DefaultTemplates {
     
     # Shows time of fetching for every module
     showTimePerformance = false
-    
+        
+    [kernelConfig]
+    # Config for kernel module
+    showBuildDate = false
 
     [diskConfig]
     # config for disks module
@@ -71,7 +74,7 @@ enum DefaultTemplates {
     [colors]
     title = "yellow"
     accent = "bright_yellow"
-    text = "white"
+    text = "bright_white"
 
     [strings]
     osTitle = "OS"

@@ -13,6 +13,9 @@ extension VantuzFetch {
 
         @Flag(name: .customLong("fast-disk-size-calc"), inversion: .prefixedNo, help: "Enable fast disk size calculation (disables calculation of deletable cache).")
         var fastDiskSizeCalc: Bool?
+        
+        @Flag(name: .customLong("kernel-build-date"), inversion: .prefixedNo, help: "Show kernel build date.")
+        var showKernelBuildDate: Bool?
 
         @Flag(name: [.customShort("a"), .customLong("all")], help: "Show all modules")
         var showAllModules = false

@@ -20,11 +20,16 @@ struct vantuzConfig: Codable {
     var modules: Modules = Modules()
     var diskConfig: DiskConfig = DiskConfig()
     var cpuConfig: CPUConfig = CPUConfig()
+    var kernelConfig: KernelConfig = KernelConfig()
 }
 
 struct DiskConfig: Codable {
     var showPhysicalDiskNames: Bool = false
     var fastVolumeSizeCalculation: Bool = false
+}
+
+struct KernelConfig: Codable {
+    var showBuildDate: Bool = false
 }
 
 struct CPUConfig: Codable {
