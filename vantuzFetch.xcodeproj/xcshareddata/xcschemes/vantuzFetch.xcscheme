@@ -61,7 +61,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--show-physical-disk-names"
+            argument = "--physical-disk-names"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--kernel-build-date"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
