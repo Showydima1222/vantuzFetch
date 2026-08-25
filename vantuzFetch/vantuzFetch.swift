@@ -27,6 +27,7 @@ struct vantuzRender {
     let terminalSize: (rows: UInt16, cols: UInt16)
     let isColorSupported: Bool
     let validColors: vantuzColors
+    let logo: [String]?
     
     static func _parseHex(_ colorValue: String, fallbackColor: String = "\u{001B}[0m") -> String {
         let cleanedInput = colorValue.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -62,7 +63,7 @@ struct vantuzRender {
         return "\u{001B}[38;2;\(r);\(g);\(b)m"
     }
     
-    init(theme: vantuzTheme) {
+    init(theme: vantuzTheme, logo: [String]?) {
         self.theme = theme
         self.terminalSize = vantuzRender._getTerminalSize()
         self.isColorSupported = isatty(STDOUT_FILENO) == 1
@@ -72,7 +73,7 @@ struct vantuzRender {
             accent: vantuzRender._parseHex(theme.colors.accent, fallbackColor: "bright_yellow"),
             text: vantuzRender._parseHex(theme.colors.text, fallbackColor: "bright_white")
         )
-        
+        self.logo = logo
     }
     
     func _getTitle (key_title: String) -> String {
@@ -119,17 +120,57 @@ struct vantuzRender {
         default: return "idk"
         }
     }
+    
+    func renderAllModules(modules: [[FetchResult]]) {
+        let range = max(modules.joined().count, self.logo?.count ?? 0)
+        var j = 0
+        for i in 0..<range {
+            let isEmpty = i >= modules.count
+            
+            if !isEmpty {
+                for result in modules[i] {
+                    self.renderLine(index: j, key_title: result.keyId, value: result.value)
+                }
+            } else {
+                self.renderLine(index: j, key_title: "", value: "")
+            }
+            
+            j += 1
+        }
+    }
+    
     func renderLine(index: Int, key_title: String, value: String) {
-        // index will used sooner as logo render will be added.
         let title = _getTitle(key_title: key_title)
         let colorfulOutput = value
             .replacing("{{ ACCENT_COLOR }}", with: self.validColors.accent)
             .replacing("{{ TEXT }}", with: self.validColors.text)
         
+        
+        let logoPart = renderLogoPart(self.logo, atIndex: index)
+        
+        let infoLine: String
+        if key_title == "" && value == "" {
+            print(logoPart)
+            return
+        }
         if self.isColorSupported {
-            print("\(self.validColors.title)\(title): \(self.validColors.text)\(colorfulOutput)\(vantuzRender.reset)")
+            infoLine = "\(self.validColors.title)\(title): \(self.validColors.text)\(colorfulOutput)\(vantuzRender.reset)"
         } else {
-            print("\(title): \(value)")
+            infoLine = "\(title): \(value)"
+        }
+        print(logoPart + infoLine)
+    }
+    
+    private func renderLogoPart(_ logo: [String]?, atIndex index: Int) -> String {
+        guard let logo, !logo.isEmpty else { return "" }
+
+        let logoWidth = logo.map { $0.count }.max() ?? 0
+
+        if index < logo.count {
+            let line = logo[index]
+            return self.validColors.accent + line.padding(toLength: logoWidth, withPad: " ", startingAt: 0) + "   " + self.validColors.text
+        } else {
+            return String(repeating: " ", count: logoWidth + 3)
         }
     }
 
@@ -225,12 +266,15 @@ struct VantuzFetch: ParsableCommand {
         
         print("vantuz!")
         
-        let vantuzRender = vantuzRender(theme: themeFile)
-        for executed in modules {
-            for result in executed {
-                vantuzRender.renderLine(index: 0, key_title: result.keyId, value: result.value)
-            }
-        }
+        let vantuzRender = vantuzRender(theme: themeFile, logo: Logotypes.shared.getLogotype("Apple"))
+        vantuzRender.renderAllModules(modules: modules)
+//        var _i = 0
+//        for executed in modules {
+//            for result in executed {
+//                vantuzRender.renderLine(index: _i, key_title: result.keyId, value: result.value)
+//                _i += 1
+//            }
+//        }
     }
 }
 
