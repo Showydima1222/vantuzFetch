@@ -130,12 +130,14 @@ struct vantuzRender {
             if !isEmpty {
                 for result in modules[i] {
                     self.renderLine(index: j, key_title: result.keyId, value: result.value)
+                    j += 1
                 }
             } else {
                 self.renderLine(index: j, key_title: "", value: "")
+                j += 1
             }
             
-            j += 1
+            
         }
     }
     
