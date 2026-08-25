@@ -8,6 +8,7 @@
 struct FetchResult: Sendable {
     let keyId: String  // id of label (using to custom label output w/ config)
     let value: String  // value of this label
+    let canBeWrapped: Bool = false
 }
 
 protocol FetchableModule: Sendable {

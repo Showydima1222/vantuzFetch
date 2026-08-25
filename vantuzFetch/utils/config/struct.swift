@@ -42,6 +42,11 @@ struct CPUConfig: Codable {
 struct vantuzTheme: Codable {
     let colors: vantuzColors
     let strings: vantuzStrings
+    let text: VantuzThemeTextConfig
+}
+
+struct VantuzThemeTextConfig: Codable {
+    let wrapPolicy: String // "smart" "crop" "none"
 }
 
 struct vantuzColors: Codable {

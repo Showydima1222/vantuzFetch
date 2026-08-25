@@ -91,5 +91,11 @@ enum DefaultTemplates {
     cpuTitle = "CPU"
     memTitle = "Memory"
     swapTitle = "Swap" 
+    
+    [text]
+    # "smart" wrap policy will try to do smart word wrapping
+    # "crop" will just cut line
+    # "none" will dont touch lines!
+    wrapPolicy = "smart"
     """
 }
