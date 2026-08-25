@@ -28,7 +28,7 @@ struct CpuModule: FetchableModule {
         if cpuConfig.showClusters {
             let cpuClusters = CpuParser.getClusters(cpuName: cpuName, config: cpuConfig)
             result = cpuClusters.isEmpty
-                ? "\(cpuName) No clusters recognized"
+                ? "\(cpuName) No clusters recognized"
                 : "\(cpuName) (\(CpuParser.getStringifiedClusters(clusters: cpuClusters)))"
         } else {
             let coresCount = CpuParser.getCoresCount()
@@ -85,7 +85,7 @@ class CpuParser {
     }
     
     static func getClusters(cpuName: String, config: CPUConfig) -> [CpuCluster] {
-        let clustersLimit = 4 // На текущих чипах Apple более 2-4 перф-уровней не существует
+        let clustersLimit = sysctlInt("hw.perflevel") ?? 1 // lol
         var clusters: [CpuCluster] = []
         
         for i in 0..<clustersLimit {
