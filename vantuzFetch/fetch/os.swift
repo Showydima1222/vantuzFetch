@@ -54,7 +54,7 @@ struct OSVersionModule: FetchableModule {
         
         let codename = OSCodenameParser.getOsCodename(major)
         let codenameSuffix = codename.map { " \($0)" } ?? ""
-        results = [FetchResult(keyId: "os", value: "macOS \(fullVersion) (\(versionRaw))\(codenameSuffix)")]
+        results = [FetchResult(keyId: "os", value: "macOS \(fullVersion) (\(versionRaw))\(codenameSuffix)", canBeSmartWrapped: true)]
         return results
     }
 }

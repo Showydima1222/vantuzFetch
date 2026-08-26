@@ -22,18 +22,9 @@ struct vantuzRender {
     ]
     static let reset = "\u{001B}[0m"
     let theme: vantuzTheme
-    let terminalSize: (rows: UInt16, cols: UInt16)
     let isColorSupported: Bool
     let validColors: vantuzColors
     let logo: [String]?
-    
-    static func _getTerminalWidth() -> UInt16? {
-        var w = winsize()
-        if ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 {
-            return w.ws_col
-        }
-        return nil
-    }
     
     static func _parseHex(_ colorValue: String, fallbackColor: String = "\u{001B}[0m") -> String {
         let cleanedInput = colorValue.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -71,7 +62,6 @@ struct vantuzRender {
     
     init(theme: vantuzTheme, logo: [String]?) {
         self.theme = theme
-        self.terminalSize = vantuzRender._getTerminalSize()
         self.isColorSupported = isatty(STDOUT_FILENO) == 1
         
         validColors = vantuzColors(
@@ -98,12 +88,12 @@ struct vantuzRender {
             .replacing("{name}", with: name)
     }
     
-    static func _getTerminalSize() -> (rows: UInt16, cols: UInt16) {
+    static func _getTerminalWidth() -> UInt16? {
         var w = winsize()
         if ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 {
-            return (w.ws_row, w.ws_col)
+            return w.ws_col
         }
-        return (24, 80)
+        return nil
     }
     
     func _getTitleRaw(key_title: String) -> String {
@@ -127,57 +117,233 @@ struct vantuzRender {
         }
     }
     
+    private func visibleLength(of input: String) -> Int {
+        var count = 0
+        var insideANSI = false
+        for char in input {
+            if char == "\u{1B}" { insideANSI = true; continue }
+            if insideANSI {
+                if char.isASCII && char.isLetter { insideANSI = false }
+                continue
+            }
+            count += 1
+        }
+        return count
+    }
+    
     func renderAllModules(modules: [[FetchResult]]) {
-        let range = max(modules.joined().count, self.logo?.count ?? 0)
-        var j = 0
-        for i in 0..<range {
-            let isEmpty = j >= modules.count
+            let flatModules = Array(modules.joined())
+            let themePolicy = WrapPolicy(rawValue: self.theme.text.wrapPolicy) ?? .smart
             
-            if !isEmpty {
-                for result in modules[i] {
-                    let _wrap: WrapPolicy = result.canBeWrapped ? WrapPolicy(rawValue: self.theme.text.wrapPolicy) ?? .smart : .none
-                    self.renderLine(index: j, key_title: result.keyId, value: result.value, wrapPolicy: _wrap)
-                    j += 1
+            var currentLogoIndex = 0
+            var currentModuleIndex = 0
+            
+            while currentModuleIndex < flatModules.count || currentLogoIndex < (self.logo?.count ?? 0) {
+                if currentModuleIndex < flatModules.count {
+                    let result = flatModules[currentModuleIndex]
+                    var currentPolicy = themePolicy
+                    
+                    // Приоритет 4: Fallback на crop
+                    if currentPolicy == .smart && !result.canBeSmartWrapped {
+                        currentPolicy = .crop
+                    }
+                    
+                    let linesPrinted = self.renderLine(
+                        logoIndex: currentLogoIndex,
+                        key_title: result.keyId,
+                        value: result.value,
+                        wrapPolicy: currentPolicy
+                    )
+                    currentLogoIndex += linesPrinted
+                    currentModuleIndex += 1
+                } else {
+                    _ = self.renderLine(logoIndex: currentLogoIndex, key_title: "", value: "", wrapPolicy: .none)
+                    currentLogoIndex += 1
                 }
+            }
+        }
+    func renderLine(logoIndex: Int, key_title: String, value: String, wrapPolicy: WrapPolicy = .smart) -> Int {
+            if key_title.isEmpty && value.isEmpty {
+                let logoPart = renderLogoPart(self.logo, atIndex: logoIndex)
+                print(logoPart.line)
+                return 1
+            }
+            
+            let title = _getTitle(key_title: key_title)
+            let rawValueOutput = value
+                .replacing("{{ ACCENT_COLOR }}", with: "")
+                .replacing("{{ TEXT }}", with: "")
+            
+            let colorfulOutput = value
+                .replacing("{{ ACCENT_COLOR }}", with: self.validColors.accent)
+                .replacing("{{ TEXT }}", with: self.validColors.text)
+            
+            let finalTitle: String
+            let finalValue: String
+            
+            if self.isColorSupported {
+                finalTitle = "\(self.validColors.title)\(title)\(vantuzRender.reset): "
+                finalValue = "\(self.validColors.text)\(colorfulOutput)\(vantuzRender.reset)"
             } else {
-                self.renderLine(index: j, key_title: "", value: "", wrapPolicy: .none)
-                j += 1
+                finalTitle = "\(title): "
+                finalValue = rawValueOutput
+            }
+            
+            let finalText = finalTitle + finalValue
+            let terminalWidth = Int(vantuzRender._getTerminalWidth() ?? 0)
+            let actualPolicy: WrapPolicy = (terminalWidth > 0 && self.isColorSupported) ? wrapPolicy : .none
+            
+            switch actualPolicy {
+            case .none:
+                let logoPart = renderLogoPart(self.logo, atIndex: logoIndex)
+                print(logoPart.line + finalText)
+                return 1
+                
+            case .crop:
+                let logoPart = renderLogoPart(self.logo, atIndex: logoIndex)
+                let croppedLine = cropStringWithANSI(logoPart.line + finalText, maxLength: terminalWidth)
+                print(croppedLine + vantuzRender.reset)
+                return 1
+                
+            case .smart:
+                let baseLogoPart = renderLogoPart(self.logo, atIndex: logoIndex)
+                let textWidth = terminalWidth - baseLogoPart.actualLength
+                
+                if textWidth <= 0 {
+                    let croppedLine = cropStringWithANSI(baseLogoPart.line + finalText, maxLength: terminalWidth)
+                    print(croppedLine + vantuzRender.reset)
+                    return 1
+                }
+                
+                let words = finalText.components(separatedBy: " ")
+                var currentLine = ""
+                var currentVisibleLength = 0
+                var linesPrinted = 0
+                var activeLogoIndex = logoIndex
+                var activeANSI = ""
+                
+                for word in words {
+                    let wordLength = visibleLength(of: word)
+                    let spaceLength = currentVisibleLength > 0 ? 1 : 0
+                    
+                    if currentVisibleLength + spaceLength + wordLength > textWidth {
+                        if currentVisibleLength == 0 {
+                            let logo = renderLogoPart(self.logo, atIndex: activeLogoIndex)
+                            print(logo.line + activeANSI + word + vantuzRender.reset)
+                            linesPrinted += 1
+                            activeLogoIndex += 1
+                            updateActiveANSI(&activeANSI, with: word)
+                        } else {
+                            let logo = renderLogoPart(self.logo, atIndex: activeLogoIndex)
+                            print(logo.line + currentLine + vantuzRender.reset)
+                            linesPrinted += 1
+                            activeLogoIndex += 1
+                            
+                            // Пробрасываем накопленный ANSI-цвет на новую строку
+                            currentLine = activeANSI + word
+                            currentVisibleLength = wordLength
+                            updateActiveANSI(&activeANSI, with: word)
+                        }
+                    } else {
+                        if currentVisibleLength > 0 {
+                            currentLine += " "
+                            currentVisibleLength += 1
+                        } else {
+                            currentLine += activeANSI
+                        }
+                        currentLine += word
+                        currentVisibleLength += wordLength
+                        updateActiveANSI(&activeANSI, with: word)
+                    }
+                }
+                
+                if !currentLine.isEmpty {
+                    let logo = renderLogoPart(self.logo, atIndex: activeLogoIndex)
+                    print(logo.line + currentLine + vantuzRender.reset)
+                    linesPrinted += 1
+                }
+                
+                return linesPrinted > 0 ? linesPrinted : 1
+
+            }
+        }
+
+
+    private func updateActiveANSI(_ current: inout String, with text: String) {
+        var insideANSI = false
+        var currentSeq = ""
+        for char in text {
+            if char == "\u{1B}" {
+                insideANSI = true
+                currentSeq = String(char)
+                continue
+            }
+            if insideANSI {
+                currentSeq.append(char)
+                if char.isASCII && char.isLetter {
+                    insideANSI = false
+                    if currentSeq == vantuzRender.reset {
+                        current = ""
+                    } else {
+                        current = currentSeq
+                    }
+                    currentSeq = ""
+                }
             }
         }
     }
-    
-    func renderLine(index: Int, key_title: String, value: String, wrapPolicy: WrapPolicy = .smart) {
-        let title = _getTitle(key_title: key_title)
-        let colorfulOutput = value
-            .replacing("{{ ACCENT_COLOR }}", with: self.validColors.accent)
-            .replacing("{{ TEXT }}", with: self.validColors.text)
+
         
-        
-        let logoPart = renderLogoPart(self.logo, atIndex: index)
-        
-        let infoLine: String
-        if key_title == "" && value == "" {
-            print(logoPart)
-            return
-        }
-        if self.isColorSupported {
-            infoLine = "\(self.validColors.title)\(title): \(self.validColors.text)\(colorfulOutput)\(vantuzRender.reset)"
-        } else {
-            infoLine = "\(title): \(value)"
-        }
-        print(logoPart + infoLine)
-    }
-    
-    private func renderLogoPart(_ logo: [String]?, atIndex index: Int) -> String {
-        guard let logo, !logo.isEmpty else { return "" }
+    private func renderLogoPart(_ logo: [String]?, atIndex index: Int) -> LogoPart {
+        guard let logo, !logo.isEmpty else { return LogoPart(line: "", actualLength: 0) }
 
         let logoWidth = logo.map { $0.count }.max() ?? 0
 
         if index < logo.count {
             let line = logo[index]
-            return self.validColors.accent + line.padding(toLength: logoWidth, withPad: " ", startingAt: 0) + "   " + self.validColors.text
+            let spacing = "   "
+            return LogoPart(line: self.validColors.accent + line.padding(toLength: logoWidth, withPad: " ", startingAt: 0) + spacing + self.validColors.text, actualLength: logoWidth + spacing.count)
         } else {
-            return String(repeating: " ", count: logoWidth + 3)
+            return LogoPart(line: String(repeating: " ", count: logoWidth + 3), actualLength: logoWidth + 3)
         }
     }
+    
+    func cropStringWithANSI(_ input: String, maxLength: Int) -> String {
+        var result = ""
+        var visibleCount = 0
+        var insideANSI = false
+
+        for char in input {
+            if char == "\u{1B}" { // Начало escape-последовательности (ESC)
+                insideANSI = true
+                result.append(char)
+                continue
+            }
+
+            if insideANSI {
+                result.append(char)
+                // Конец стандартного ANSI-кода (SGR) всегда обозначается латинской буквой, чаще всего 'm'
+                if char.isASCII && char.isLetter {
+                    insideANSI = false
+                }
+                continue
+            }
+
+            if visibleCount < maxLength {
+                result.append(char)
+                visibleCount += 1
+            } else {
+                // Лимит достигнут, прекращаем сборку строки
+                break
+            }
+        }
+        return result
+    }
+
+}
+
+
+struct LogoPart {
+    let line: String
+    let actualLength: Int
 }

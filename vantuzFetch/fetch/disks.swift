@@ -136,7 +136,8 @@ struct DisksModule: FetchableModule {
                 let isInternal = disk.isInternal ? " (Internal)" : " (External)"
                 let isReadOnly = disk.isReadOnly ? " (ReadOnly)" : ""
                 let usedPercent = Int(round(disk.usedSpace.asGB() / disk.total.asGB() * 100))
-                results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName)", value: "\(userGb) / \(totalGb) (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)"))
+                results.append(FetchResult(keyId: "\(self.id)_\(i)_\(disk.volumeName)\(physicalName.replacing(" ", with: " "))", value: "\(userGb) / \(totalGb) (\(usedPercent)%)\(isSystemDisk)\(isInternal)\(isReadOnly)",
+                                          canBeSmartWrapped: true))
                 i += 1
             }
         }

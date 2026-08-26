@@ -12,9 +12,9 @@ struct SwapModule: FetchableModule {
     func run() -> [FetchResult] {
         let swap: xsw_usage? = sysctlXusage("vm.swapusage")
         if let swap: xsw_usage {
-            let isEncrypted = swap.xsu_encrypted != 0 ? ", encrypted" : ""
-            return([FetchResult(keyId: "swap", value: "\(UInt64(swap.xsu_used).autoCS()) (allocated: \(swap.xsu_total.autoCS()), free: \(swap.xsu_avail.autoCS())\(isEncrypted))")])
+            let isEncrypted = swap.xsu_encrypted != 0 ? ", encrypted" : ""
+            return([FetchResult(keyId: "swap", value: "\(UInt64(swap.xsu_used).autoCS()) (allocated: \(swap.xsu_total.autoCS()), free: \(swap.xsu_avail.autoCS())\(isEncrypted))", canBeSmartWrapped: true)])
         }
-        return [FetchResult(keyId: "spaw", value: "disabled")]
+        return [FetchResult(keyId: "swap", value: "disabled", canBeSmartWrapped: true)]
     }
 }

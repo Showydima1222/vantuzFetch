@@ -7,7 +7,8 @@ final class OsCodenames: Sendable {
         14: "Sonoma",
         13: "Ventura",
         12: "Monterey",
-        11: "Big Sur"
+        11: "Big Sur",
+        27: "Golden Gate"
     ]
     private init() {}
     static let shared = OsCodenames()

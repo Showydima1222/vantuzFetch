@@ -36,6 +36,6 @@ struct MemoryModule: FetchableModule {
         
         let usedMemory = total - (external + (free - speculative))
         
-        return [FetchResult(keyId: self.id, value: "\(total.autoCS()) total, \(usedMemory.autoCS()) used")]
+        return [FetchResult(keyId: self.id, value: "\(total.autoCS()), \(usedMemory.autoCS()) used", canBeSmartWrapped: true)]
     }
 }

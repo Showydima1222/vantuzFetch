@@ -21,7 +21,7 @@ struct CpuModule: FetchableModule {
         let cpuName = CpuParser.getCpuName()
         
         guard cpuConfig.showCoresCount else {
-            return [FetchResult(keyId: self.id, value: cpuName)]
+            return [FetchResult(keyId: self.id, value: cpuName, canBeSmartWrapped: true)]
         }
         
         let result: String
@@ -35,7 +35,7 @@ struct CpuModule: FetchableModule {
             result = coresCount.isEmpty ? cpuName : "\(cpuName) (\(coresCount))"
         }
         
-        return [FetchResult(keyId: self.id, value: result)]
+        return [FetchResult(keyId: self.id, value: result, canBeSmartWrapped: true)]
     }
 }
 
@@ -85,7 +85,7 @@ class CpuParser {
     }
     
     static func getClusters(cpuName: String, config: CPUConfig) -> [CpuCluster] {
-        let clustersLimit = sysctlInt("hw.perflevel") ?? 1 // lol
+        let clustersLimit = sysctlInt("hw.nperflevels") ?? 1 // lol
         var clusters: [CpuCluster] = []
         
         for i in 0..<clustersLimit {
@@ -97,12 +97,12 @@ class CpuParser {
     
     static func getStringifiedClusters(clusters: [CpuCluster]) -> String {
         return clusters.map { cluster in
-            let nameStr = cluster.coreName.map { " \($0)" } ?? ""
-            let freqStr = cluster.coreFreq.map { " @ \($0)MHz" } ?? ""
+            let nameStr = cluster.coreName.map { " \($0)" } ?? ""
+            let freqStr = cluster.coreFreq.map { " @ \($0)MHz" } ?? ""
             
             var cacheParts: [String] = []
-            if cluster.l1Cache > 0 { cacheParts.append("L1: \(cluster.l1Cache.autoCS())") }
-            if cluster.l2Cache > 0 { cacheParts.append("L2: \(cluster.l2Cache.autoCS())") }
+            if cluster.l1Cache > 0 { cacheParts.append("L1: \(cluster.l1Cache.autoCS())") }
+            if cluster.l2Cache > 0 { cacheParts.append("L2: \(cluster.l2Cache.autoCS())") }
             let cacheStr = cacheParts.isEmpty ? "" : " " + cacheParts.joined(separator: ", ")
             
             return "\(cluster.coreCount)\(nameStr)\(freqStr)\(cacheStr)"

@@ -61,18 +61,18 @@ struct DisplayModule: FetchableModule {
                 let ppi = Int(round(diagonalPixels / diagonalInches))
                 let roundedInches = round(diagonalInches * 10) / 10
                 
-                metricsString = " (\(roundedInches)\", \(ppi) PPI)"
+                metricsString = " (\(roundedInches)\", \(ppi) PPI)"
             }
             
             
             let refreshRate: String = mode.refreshRate.formatted()
-            let displayRefreshRate = mode.refreshRate > 0 ? " @ \(refreshRate)Hz" : ""
+            let displayRefreshRate = mode.refreshRate > 0 ? " @ \(refreshRate)Hz" : ""
             
             let isMain = CGDisplayIsMain(display) == 1 ? " (Main)" : ""
             
             let resultString = "\(displayResolution)\(displayRefreshRate)\(metricsString)\(isMain)"
             
-            buffer.append(FetchResult(keyId: "display_\(counter)", value: resultString))
+            buffer.append(FetchResult(keyId: "display_\(counter)", value: resultString, canBeSmartWrapped: true))
             counter += 1
         }
         return buffer

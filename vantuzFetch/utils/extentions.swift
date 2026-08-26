@@ -41,19 +41,19 @@ extension BinaryInteger {
 
     func autoSI() -> String {
         let bytes = asDouble
-        if bytes < 1000 { return "\(self) B" }
-        else if bytes < 1000 * 1000 { return "\(bytes.asKB().asFormattedString()) KB" }
-        else if bytes < 1000 * 1000 * 1000 { return "\(bytes.asMB().asFormattedString()) MB" }
-        else if bytes < 1000 * 1000 * 1000 * 1000 { return "\(bytes.asGB().asFormattedString()) GB" }
-        else { return "\(bytes.asTB().asFormattedString()) TB" }
+        if bytes < 1000 { return "\(self) B" }
+        else if bytes < 1000 * 1000 { return "\(bytes.asKB().asFormattedString()) KB" }
+        else if bytes < 1000 * 1000 * 1000 { return "\(bytes.asMB().asFormattedString()) MB" }
+        else if bytes < 1000 * 1000 * 1000 * 1000 { return "\(bytes.asGB().asFormattedString()) GB" }
+        else { return "\(bytes.asTB().asFormattedString()) TB" }
     }
 
     func autoCS() -> String {
         let bytes = asDouble
-        if bytes < 1024 { return "\(self) B" }
-        else if bytes < 1024 * 1024 { return "\(bytes.asKiB().asFormattedString()) KiB" }
-        else if bytes < 1024 * 1024 * 1024 { return "\(bytes.asMiB().asFormattedString()) MiB" }
-        else if bytes < 1024 * 1024 * 1024 * 1024 { return "\(bytes.asGiB().asFormattedString()) GiB" }
-        else { return "\(bytes.asTiB().asFormattedString()) TiB" }
+        if bytes < 1024 { return "\(self) B" }
+        else if bytes < 1024 * 1024 { return "\(bytes.asKiB().asFormattedString()) KiB" }
+        else if bytes < 1024 * 1024 * 1024 { return "\(bytes.asMiB().asFormattedString()) MiB" }
+        else if bytes < 1024 * 1024 * 1024 * 1024 { return "\(bytes.asGiB().asFormattedString()) GiB" }
+        else { return "\(bytes.asTiB().asFormattedString()) TiB" }
     }
 }

@@ -19,7 +19,7 @@ struct KernelModule: FetchableModule {
                 kernelVersionString = kernelVersionString.split(separator: ":").first.map(String.init) ?? ""
             }
             
-            return [FetchResult(keyId: "kernel", value: kernelVersionString)]
+            return [FetchResult(keyId: "kernel", value: kernelVersionString, canBeSmartWrapped: true)]
         }
         return []
     }
