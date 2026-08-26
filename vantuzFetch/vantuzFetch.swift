@@ -76,11 +76,24 @@ struct VantuzFetch: ParsableCommand {
     
     @OptionGroup var flags: FlagOptions
     
+    private static let VERSION = 10000
+    static var version: String {
+        let major = VantuzFetch.VERSION / 10000
+        let minor = (VantuzFetch.VERSION % 10000) / 100
+        let patch = (VantuzFetch.VERSION % 100)
+        return "\(major).\(minor).\(patch)"
+    }
+    
     mutating func run() throws {
         let configInitializer = VantuzConfigInitializer()
         let activePaths = configInitializer.loadActivePaths()
         let configFile: vantuzConfig = configInitializer.loadConfig(from: activePaths.configURL)
         let themeFile: vantuzTheme = configInitializer.loadTheme(from: activePaths.themeURL)
+        
+        if flags.showVersion ?? false {
+            print("Current vantuzfetch version is \(VantuzFetch.version)")
+            return
+        }
         
         let finalShowPhysicalDiskNames = flags.showPhysicalDiskNames ?? configFile.diskConfig.showPhysicalDiskNames
         let finalFastDiskSizeCalc = flags.fastDiskSizeCalc ?? configFile.diskConfig.fastVolumeSizeCalculation

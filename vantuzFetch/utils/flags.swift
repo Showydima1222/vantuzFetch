@@ -8,6 +8,16 @@ import ArgumentParser
 
 extension VantuzFetch {
     struct FlagOptions: ParsableArguments {
+        
+        @Flag(name: [.customLong("version"), .customShort("v")], help: "Show version.")
+        var showVersion: Bool = false
+        
+        @Flag(name: .customLong("time"), inversion: .prefixedNo, help: "Measure time of fetching.")
+        var measureTime: Bool?
+        
+        @Flag(name: [.customShort("a"), .customLong("all")], help: "Show all modules")
+        var showAllModules = false
+        
         @Flag(name: .customLong("physical-disk-names"), inversion: .prefixedNo, help: "Show or hide physical names of disks.")
         var showPhysicalDiskNames: Bool?
 
@@ -17,10 +27,6 @@ extension VantuzFetch {
         @Flag(name: .customLong("kernel-build-date"), inversion: .prefixedNo, help: "Show kernel build date.")
         var showKernelBuildDate: Bool?
 
-        @Flag(name: [.customShort("a"), .customLong("all")], help: "Show all modules")
-        var showAllModules = false
 
-        @Flag(name: .customLong("time"), inversion: .prefixedNo, help: "Measure time of fetching.")
-        var measureTime: Bool?
     }
 }
