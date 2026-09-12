@@ -105,9 +105,9 @@ enum DefaultTemplates {
     shellTitle = "Shell"
     terminalTitle = "Terminal"
     hostTitle = "Host"
-    gpuTitle = "GPU ({num})"
-    displayTitle = "Display ({num})"
-    disksTitle = "Disk ({num}, {name})"
+    gpuTitle = "GPU ({num})" # supported keywords: num
+    displayTitle = "Display ({num})" # supported keywords: num
+    disksTitle = "Disk ({num}, {name})" # supported keywords: num, name
     cpuTitle = "CPU"
     memTitle = "Memory"
     memPressureTitle = "Memory Pressure"

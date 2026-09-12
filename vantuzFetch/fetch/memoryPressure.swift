@@ -9,7 +9,7 @@ import Foundation
 import MachO
 
 struct MemoryPressureModule: FetchableModule {
-    let id: String = "mem_pressure"
+    let id: String = "mem-pressure"
     let isHeavy: Bool = false
        
     func run() -> [FetchResult] {
