@@ -3,6 +3,8 @@ import Foundation
 import Darwin
 
 
+
+
 private final class SafeStorage: @unchecked Sendable {
     private let lock = NSLock()
     var items: [(index: Int, results: [FetchResult])] = []
@@ -39,6 +41,7 @@ struct vantuzModules {
             DisksModule(showPhysicalDiskNames: config.diskConfig.showPhysicalDiskNames, fastVolumeSizeCalculation: config.diskConfig.fastVolumeSizeCalculation),
             CpuModule(cpuConfig: config.cpuConfig),
             MemoryModule(),
+            MemoryPressureModule(),
             SwapModule(),
         ]
         self.modulesOrdered = Dictionary(uniqueKeysWithValues: allModules.map { ($0.id, $0) })

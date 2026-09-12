@@ -8,6 +8,25 @@
 
 import Foundation
 
+enum DefaultStrings {
+    static let osTitle = "Os"
+    static let kernelTitle = "Kernel"
+    static let machineTitle = "Machine"
+    static let uptimeTitle = "Uptime"
+    static let waketimeTitle = "Waketime"
+    static let terminalTitle = "Terminal"
+    static let shellTitle = "Shell"
+    static let hostTitle = "Host"
+    static let gpuTitle = "GPU"
+    static let displayTitle = "Display"
+    static let disksTitle = "Disks"
+    static let cpuTitle = "CPU"
+    static let memTitle = "Memory"
+    static let memPressureTitle = "Memory Pressure"
+    static let swapTitle = "Swap"
+}
+
+
 enum DefaultTemplates {
     
     static let globalToml = """
@@ -37,6 +56,7 @@ enum DefaultTemplates {
     # gpu — list of all gpus (if there is egpu)
     # cpu — information about cpu
     # mem — info about ram
+    # mem_pressure — pressure level of ram
     # swap - info about swap
     # disks — list of all disks
     
@@ -90,7 +110,8 @@ enum DefaultTemplates {
     disksTitle = "Disk ({num}, {name})"
     cpuTitle = "CPU"
     memTitle = "Memory"
-    swapTitle = "Swap" 
+    memPressureTitle = "Memory Pressure"
+    swapTitle = "Swap"
     
     [text]
     # "smart" wrap policy will try to do smart word wrapping

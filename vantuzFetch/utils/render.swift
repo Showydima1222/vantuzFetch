@@ -111,6 +111,7 @@ struct vantuzRender {
         case "disks": return self.theme.strings.disksTitle
         case "cpu": return self.theme.strings.cpuTitle
         case "mem": return self.theme.strings.memTitle
+        case "mem_pressure": return self.theme.strings.memPressureTitle
         case "swap": return self.theme.strings.swapTitle
             
         default: return "idk"
