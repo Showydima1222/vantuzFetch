@@ -201,6 +201,7 @@ struct vantuzStrings: Codable {
     var memTitle: String
     var memPressureTitle: String
     var swapTitle: String
+    var externalIpTitle: String
 
     enum CodingKeys: String, CodingKey {
         case osTitle
@@ -218,6 +219,7 @@ struct vantuzStrings: Codable {
         case memTitle
         case memPressureTitle
         case swapTitle
+        case externalIpTitle
     }
 
     init(
@@ -236,6 +238,7 @@ struct vantuzStrings: Codable {
         memTitle: String = DefaultStrings.memTitle,
         memPressureTitle: String = DefaultStrings.memPressureTitle,
         swapTitle: String = DefaultStrings.swapTitle,
+        externalIpTitle: String = DefaultStrings.externalIpTitle
     ) {
         self.osTitle = osTitle
         self.kernelTitle = kernelTitle
@@ -252,6 +255,7 @@ struct vantuzStrings: Codable {
         self.memTitle = memTitle
         self.memPressureTitle = memPressureTitle
         self.swapTitle = swapTitle
+        self.externalIpTitle = externalIpTitle
     }
 
     init(from decoder: Decoder) throws {
@@ -271,6 +275,7 @@ struct vantuzStrings: Codable {
         self.memTitle = try container.decodeIfPresent(String.self, forKey: .memTitle) ?? DefaultStrings.memTitle
         self.memPressureTitle = try container.decodeIfPresent(String.self, forKey: .memPressureTitle) ?? DefaultStrings.memPressureTitle
         self.swapTitle = try container.decodeIfPresent(String.self, forKey: .swapTitle) ?? DefaultStrings.swapTitle
+        self.externalIpTitle = try container.decodeIfPresent(String.self, forKey: .externalIpTitle) ?? DefaultStrings.externalIpTitle
     }
 }
 

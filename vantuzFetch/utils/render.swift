@@ -113,6 +113,7 @@ struct vantuzRender {
         case "mem-pressure": return self.theme.strings.memPressureTitle
         case "mem": return self.theme.strings.memTitle
         case "swap": return self.theme.strings.swapTitle
+        case "external-ip": return self.theme.strings.externalIpTitle
             
         default: return "idk"
         }
@@ -144,7 +145,7 @@ struct vantuzRender {
                     let result = flatModules[currentModuleIndex]
                     var currentPolicy = themePolicy
                     
-                    // Приоритет 4: Fallback на crop
+                    /// Приоритет 4: Fallback на crop
                     if currentPolicy == .smart && !result.canBeSmartWrapped {
                         currentPolicy = .crop
                     }
@@ -240,7 +241,7 @@ struct vantuzRender {
                             linesPrinted += 1
                             activeLogoIndex += 1
                             
-                            // Пробрасываем накопленный ANSI-цвет на новую строку
+                            /// Пробрасываем накопленный ANSI-цвет на новую строку
                             currentLine = activeANSI + word
                             currentVisibleLength = wordLength
                             updateActiveANSI(&activeANSI, with: word)
@@ -315,7 +316,7 @@ struct vantuzRender {
         var insideANSI = false
 
         for char in input {
-            if char == "\u{1B}" { // Начало escape-последовательности (ESC)
+            if char == "\u{1B}" { /// Начало escape-последовательности (ESC)
                 insideANSI = true
                 result.append(char)
                 continue
@@ -323,7 +324,7 @@ struct vantuzRender {
 
             if insideANSI {
                 result.append(char)
-                // Конец стандартного ANSI-кода (SGR) всегда обозначается латинской буквой, чаще всего 'm'
+                /// Конец стандартного ANSI-кода (SGR) всегда обозначается латинской буквой, чаще всего 'm'
                 if char.isASCII && char.isLetter {
                     insideANSI = false
                 }
@@ -334,7 +335,7 @@ struct vantuzRender {
                 result.append(char)
                 visibleCount += 1
             } else {
-                // Лимит достигнут, прекращаем сборку строки
+                /// Лимит достигнут, прекращаем сборку строки
                 break
             }
         }

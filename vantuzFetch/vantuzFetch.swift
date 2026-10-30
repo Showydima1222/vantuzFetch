@@ -43,6 +43,7 @@ struct vantuzModules {
             MemoryModule(),
             MemoryPressureModule(),
             SwapModule(),
+            ExternalIPModule(),
         ]
         self.modulesOrdered = Dictionary(uniqueKeysWithValues: allModules.map { ($0.id, $0) })
     }
@@ -125,5 +126,4 @@ struct VantuzFetch: ParsableCommand {
         vantuzRender.renderAllModules(modules: modules)
     }
 }
-
 

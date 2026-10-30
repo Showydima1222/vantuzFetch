@@ -6,11 +6,11 @@
 //
 
 struct FetchResult: Sendable {
-    // id of label (using to custom label output w/ config)
-    // IMPORTANT: KEYID SHOULDNT CONTAIN '_'. Use '-' instead.
+    /// id of label (using to custom label output w/ config).
+    /// IMPORTANT: KEYID SHOULDNT CONTAIN '_'. Use '-' instead.
     let keyId: String
     
-    let value: String  // value of this label
+    let value: String  /// value of this label
     var canBeSmartWrapped: Bool = false
 }
 

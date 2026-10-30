@@ -24,7 +24,7 @@ enum DefaultStrings {
     static let memTitle = "Memory"
     static let memPressureTitle = "Memory Pressure"
     static let swapTitle = "Swap"
-    static let externalIp = "External IP"
+    static let externalIpTitle = "External IP"
 }
 
 
@@ -114,6 +114,7 @@ enum DefaultTemplates {
     memTitle = "Memory"
     memPressureTitle = "Memory Pressure"
     swapTitle = "Swap"
+    externalIpTitle = "External IP"
     
     [text]
     # "smart" wrap policy will try to do smart word wrapping
