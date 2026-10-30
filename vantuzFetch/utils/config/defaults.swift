@@ -24,6 +24,7 @@ enum DefaultStrings {
     static let memTitle = "Memory"
     static let memPressureTitle = "Memory Pressure"
     static let swapTitle = "Swap"
+    static let externalIp = "External IP"
 }
 
 
@@ -56,9 +57,10 @@ enum DefaultTemplates {
     # gpu — list of all gpus (if there is egpu)
     # cpu — information about cpu
     # mem — info about ram
-    # mem_pressure — pressure level of ram
+    # mem-pressure — pressure level of ram
     # swap - info about swap
     # disks — list of all disks
+    # extenal-ip — external IP-adress
     
     # Shows time of fetching for every module
     showTimePerformance = false
